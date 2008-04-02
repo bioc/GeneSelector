@@ -1,0 +1,33 @@
+Package: GeneSelector
+Version: 0.9.5
+Date: 2008-1-31
+Title: GeneSelector
+Author: Martin Slawski <martin.slawski@campus.lmu.de>, Anne-Laure Boulesteix <boulesteix@slcmsr.net>. 
+Maintainer: Martin Slawski <martin.slawski@campus.lmu.de>
+Depends: R (>= 2.5.1), methods, stats, Biobase
+Suggests: multtest, siggenes, samr, limma, sma
+Description: The term 'GeneSelector' refers to a filter selecting those genes 
+	     which are consistently identified as differentially 
+	     expressed using various statistical procedures. 
+             'Selected' genes are those present
+             at the top of the list in various featured ranking
+             methods (currently 15). In addition, the stability
+             of the findings can be taken in account in the final 
+	     ranking by examining perturbed
+             versions of the original data set, e.g. by leaving
+             samples, swapping class labels, generating bootstrap
+             replicates or adding noise.
+Collate: classes.r GenerateFoldMatrix.r GenerateBootMatrix.r
+         GetRepeatRanking.r GetStabilityLm.r GetStabilityOverlap.r
+         GetStabilityPCA.r GetStabilityGLM.r AggregateBayes.r
+         AggregatePCA.r AggregatePenalty.r AggregateSimple.r
+         GeneSelector.r HeatmapMethods.r PCAMethods.r 
+         RankingBaldiLong.r RankingBstat.r RankingEbam.r
+         RankingFC.r RankingFoxDimmic.r RankingGap.r
+         RankingLimma.r RankingPermutation.r RankingSam.r
+         RankingShrinkageT.r RankingSoftthresholdT.r
+         RankingTstat.r RankingWelchT.r RankingWilcEbam.r
+         RankingWilcoxon.r RecoveryScore.r GetAlpha.r AdjustPvalues.r
+         internals.r
+License: GPL (version 2 or later)
+biocViews: Statistics, DifferentialExpression
