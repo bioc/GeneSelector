@@ -7,6 +7,7 @@
 \title{\large{\texttt{GeneSelector}} package vignette}
 \author{Martin Slawski \footnote{\url{Martin.Slawski@campus.lmu.de}}\\
         Anne-Laure Boulesteix \footnote{\url{http://www.slcmsr.net/boulesteix}}}
+\usepackage{Sweave}
 
 \begin{document}
 \date{\normalsize{Sylvia Lawry Centre, Hohenlindenerstr. 1, D-81677 Munich, Germany}}
