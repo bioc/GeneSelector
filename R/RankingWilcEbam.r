@@ -47,7 +47,7 @@ setMethod("RankingWilcEbam", signature(x="matrix", y="numeric"),
           if(nlevels(y) != 2)
           stop("Type has been chosen 'unpaired', but y has not exactly two levels ! \n")
            ll$cl <- as.numeric(y)
-           out <- do.call("wilc.ebam", ll)
+           out <- do.call(wilc.ebam, ll)
           }
           if(type == "paired"){
            tab <- table(y)
