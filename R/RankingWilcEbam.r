@@ -56,14 +56,14 @@ setMethod("RankingWilcEbam", signature(x="matrix", y="numeric"),
            if(tab[1] != tab[2] || length(unique(y[1:tab[1]])) != 1 | length(unique(y[-c(1:tab[1])])) != 1)
            stop("Incorrect coding for type='paired'. \n")
            ll$cl <- c(-(1:tab[1]),(1:tab[1]))
-           out <- do.call("wilc.ebam", ll)
+           out <- do.call(wilc.ebam, ll)
           }
 
           if(type == "onesample"){
           if(length(unique(y)) != 1)
           warning("Type has been chosen 'onesample', but y has more than one level. \n")
           ll$cl <- rep(1, length(y))
-          out <- do.call("wilc.ebam", ll)
+          out <- do.call(wilc.ebam, ll)
           }
 
           check.out <- siggenes:::checkFUNout(out)

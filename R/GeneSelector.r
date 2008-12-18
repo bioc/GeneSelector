@@ -87,7 +87,7 @@ omatbool <- 1*(omatord <= maxrank)
 inout <- apply(omatbool, 2, function(z) ifelse(z == 1, "+", "-"))
 survind <- (rowSums(omatbool) == length(indstatistic))
 arglistord <- data.frame(cbind(1*(!omatbool), omatord)) 
-ranking <- do.call("order", arglistord)
+ranking <- do.call(order, arglistord)
 absdist <- rowSums(omat) - ll
 maxdist <- (nro-1)*ll
 reldist <- absdist/maxdist 

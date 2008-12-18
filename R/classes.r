@@ -232,13 +232,13 @@ setMethod("plot", signature("RepeatRanking", "missing"),
           ll$x <- ll$y <- 1:ngenes 
           ll$type <- "n"
           ll$ylim <- c(0, 2*ngenes)
-          do.call("plot", args=ll)
+          do.call(plot, args=ll)
           abline(0,1, lwd=2.5, col="blue")
           ll$type <- "p"
           for(i in 1:ncol(x@rankings)){
           ll$y <- match(x@original@ranking[1:ngenes], 
                        x@rankings[,i])
-          do.call("points", args=ll)               
+          do.call(points, args=ll)               
           }
           }
           )
@@ -350,7 +350,7 @@ setMethod("plot", signature("StabilityLm", "missing"),
           if(scaled) ll$y <- x@residuals[1:ngenes]
           else ll$y <- x@residuals.unscaled[1:ngenes]
           if(standardize) ll$y <- scale(ll$y)
-          do.call("plot", args=ll)
+          do.call(plot, args=ll)
           })
           
 #+++++++++++ Class: StabilityOverlap +++++++++++++++++++++++++++++++++++++++++++++++#
@@ -404,7 +404,7 @@ setMethod("plot", signature("StabilityOverlap", "missing"),
           ll$y <- apply(x@overlap[1:ngenes, , drop=FALSE], 1, mean)
           ll$ylim <- c(0, ngenes)
           layout(mat=as.matrix(c(1,2)), heights=c(1,1))
-          do.call("plot", args=ll)
+          do.call(plot, args=ll)
           abline(0,1, lwd=2.5)
           ll$col <- "red"
           ll$lty <- "dashed"
@@ -414,7 +414,7 @@ setMethod("plot", signature("StabilityOverlap", "missing"),
           ll$ylim <- c(0,1)
           ll$ylab <- "score"
           ll$main <- "Mean Score"
-          do.call("plot", args=ll)
+          do.call(plot, args=ll)
           layout(mat=as.matrix(1))
            }
           )
@@ -447,7 +447,7 @@ setMethod("plot", signature("AggregatedRanking", "missing"),
           ll$type <- "h"
           if(!hasArg(ylab)) ll$ylab <- "posterior probability"
           if(!hasArg(xlab)) ll$xlab <- "rank"
-          do.call("plot", args=ll)
+          do.call(plot, args=ll)
            }
           )
           
@@ -492,7 +492,7 @@ setMethod("plot", signature("CombinedRanking", "missing"),
           if(!hasArg(xlab)) ll$xlab <- "gene index"
           if(!hasArg(cex.lab)) ll$cex.lab <- 1.5
           if(!hasArg(ylim)) ll$ylim <- c(0, max(ll$height)+deltay*2)
-          bb <- do.call("barplot", args=ll)
+          bb <- do.call(barplot, args=ll)
           chars <- as.character(x@ranking[1:top])
           for(i in 1:top) 
           characterplot(chars[i], bb[i], ll$height[i], deltax=3/top, deltay=deltay, cex=15/top)} 

@@ -48,7 +48,7 @@ setMethod("RankingEbam", signature(x="matrix", y="numeric"),
           if(nlevels(y) != 2)
           stop("Type has been chosen 'unpaired', but y has not exactly two levels ! \n")
            ll$cl <- as.numeric(y)
-           out <- do.call("z.ebam", ll)
+           out <- do.call(z.ebam, ll)
           }
           if(type == "paired"){
            tab <- table(y)
@@ -57,14 +57,14 @@ setMethod("RankingEbam", signature(x="matrix", y="numeric"),
            if(tab[1] != tab[2] || length(unique(y[1:tab[1]])) != 1 | length(unique(y[-c(1:tab[1])])) != 1)
            stop("Incorrect coding for type='paired'. \n")
            ll$cl <- c(-(1:tab[1]),(1:tab[1]))
-           out <- do.call("z.ebam", ll)
+           out <- do.call(z.ebam, ll)
           }
           
           if(type == "onesample"){
           if(length(unique(y)) != 1)
           warning("Type has been chosen 'onesample', but y has more than one level. \n")
           ll$cl <- rep(1, length(y))
-          out <- do.call("z.ebam", ll)
+          out <- do.call(z.ebam, ll)
           }
           
           check.out <- siggenes:::checkFUNout(out)
