@@ -9,12 +9,14 @@
             statistics used. If  this criterion is not met, then the
             gene is selected.\cr
             A final order of the genes is defined by the following criteria
-            \item{1.}{A user-defined ranking of the used statistics, i.e.
-                      the user decides which statistic is most important}
-            \item{2.}{'Selection', i.e. falling below the threshold yes/no}
-            \item{3.}{The obtained ranks. The rank from the most important
-                      statistic is considered, then that from the second
-                      most important, and so on.} 
+             \describe{
+              \item{1.}{A user-defined ranking of the used statistics, i.e.
+                        the user decides which statistic is most important}
+              \item{2.}{'Selection', i.e. falling below the threshold yes/no}
+              \item{3.}{The obtained ranks. The rank from the most important
+                        statistic is considered, then that from the second
+                        most important, and so on.} 
+             }
             }
 \usage{
 GeneSelector(Rlist, ind = NULL, indstatistic = 1:length(Rlist), 
