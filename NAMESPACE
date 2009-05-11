@@ -2,23 +2,24 @@ import(methods, Biobase)
 importFrom(graphics, plot)
 import(stats)
 
-exportClasses("GeneRanking", "FoldMatrix", "BootMatrix", "RepeatRanking",
-              "StabilityLm", "StabilityOverlap", "AggregatedRanking", "CombinedRanking",
-               "StabilityGLM", "PCAMethodsResult", "StabilityPCA")
+useDynLib(GeneSelector)
+
+exportClasses("GeneRanking", "FoldMatrix", "BootMatrix", "RepeatedRanking",
+              "StabilityOverlap", "StabilityDistance", "StabilityUnion", 
+"AggregatedRanking", "GeneSelectorOutput")
 
 
-export("RecoveryScore", "AdjustPvalues", "GetAlpha", "samplingcontrol", "HeatmapMethods", "GeneSelector", "PCAMethods")
-
-
-exportMethods("show", "summary", "toplist", "plot", "join","SelectedGenes", "GeneInfoScreen",
+exportMethods("show", "summary", "toplist", "plot", "SelectedGenes", 
                 "RankingBaldiLong", "RankingBstat",
-                "RankingEbam", "RankingFC", "RankingFoxDimmic",
-                "RankingGap", "RankingLimma", "RankingPermutation",
+                "RankingEbam", "RankingFC", "RankingFoxDimmic", "RankingLimma", "RankingPermutation",
                 "RankingSam", "RankingShrinkageT", "RankingSoftthresholdT",
                 "RankingTstat", "RankingWelchT", "RankingWilcEbam", "RankingWilcoxon",
                 "GenerateFoldMatrix", "GenerateBootMatrix",
-                "GetRepeatRanking", "GetStabilityLm", "GetStabilityOverlap", "AggregateBayes", "AggregateSimple",
-                "variance", "AggregatePenalty", "AggregatePCA", "GetStabilityPCA", "GetStabilityGLM")
+                "RepeatRanking", "GetStabilityOverlap", "GetStabilityDistance", "GetStabilityUnion", 
+		"AggregateSimple", "AggregatePenalty", "AggregateMC", "AggregateSVD", "GeneSelector",
+                 "HeatmapRankings", "MergeRankings", "MergeMethods", "dispersion")
+
+export("samplingcontrol")
 
 
 
