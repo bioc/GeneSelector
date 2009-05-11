@@ -1,12 +1,15 @@
 \name{RankingLimma}
 \alias{RankingLimma}
+\alias{RankingLimma-methods}
+\alias{RankingLimma,matrix,numeric-method}
+\alias{RankingLimma,matrix,factor-method}
+\alias{RankingLimma,ExpressionSet,character-method}
 \title{Ranking based on the 'moderated' t statistic}
 \description{
- The 'moderated' t statistic is based on a bayesian hierarchical
- model which is estimated by an empirical bayes approach (Smyth et al,2003).
- The function is a wrapper to the function \code{fitLm} and
- \code{eBayes} of the \code{limma} package.\cr
-  For \code{S4} method information, see \link{RankingLimma-methods}.  
+ The 'moderated' t statistic is based on a Bayesian hierarchical
+ model which is estimated by an empirical Bayes approach (Smyth et al., 2003).
+ The function is a wrapper to the functions \code{fitLm} and
+ \code{eBayes} implemented in the \code{limma} package.
 }
 \usage{
 RankingLimma(x, y, type = c("unpaired", "paired", "onesample"), gene.names = NULL, ...)
@@ -49,14 +52,14 @@ RankingLimma(x, y, type = c("unpaired", "paired", "onesample"), gene.names = NUL
 \references{Smyth, G. K., Yang, Y.-H., Speed, T. P. (2003).\cr 
             Statistical issues in microarray data analysis. 
             \emph{Methods in Molecular Biology 2:24, 111-136}.}
-\author{Martin Slawski \email{martin.slawski@campus.lmu.de} \cr
-        Anne-Laure Boulesteix \url{http://www.slcmsr.net/boulesteix}}
+\author{Martin Slawski \cr
+        Anne-Laure Boulesteix}
 \seealso{
-         \link{GetRepeatRanking}, \link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
+         \link{RepeatRanking}, \link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
           \link{RankingBaldiLong}, \link{RankingFoxDimmic}, 
           \link{RankingEbam}, \link{RankingWilcEbam}, \link{RankingSam}, 
           \link{RankingBstat}, \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
-          \link{RankingPermutation}, \link{RankingGap}}
+          \link{RankingPermutation}}
 \keyword{univar}
 \examples{
 ### Load toy gene expression data

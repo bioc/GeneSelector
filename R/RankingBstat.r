@@ -51,15 +51,15 @@ setMethod("RankingBstat", signature(x="matrix", y="numeric"),
           }
 
           pvals <- rep(NA, nrow(x))
-          ranking <- order(statistic, decreasing=TRUE)
+          ranking <- rank(-abs(statistic))
           if(!is.null(gene.names))
             names(pvals) <- names(statistic) <- gene.names
           else{
           if(!is.null(rownames(x)))
             names(pvals) <- names(statistic) <- rownames(x)
           }
-          new("GeneRanking", x=x, y=as.factor(y), statistic=statistic[ranking],
-          ranking=ranking, pval=pvals[ranking], type=type, method="Bstat")
+          new("GeneRanking", x=x, y = as.factor(y), statistic=statistic,
+          ranking=ranking, pval=pvals, type=type, method="Bstat")
 })
 
 ### signature: x=matrix, y=factor.

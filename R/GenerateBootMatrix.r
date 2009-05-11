@@ -35,8 +35,8 @@ standardGeneric("GenerateBootMatrix"))
 
 ### signature: x=matrix, y=numeric.
 
-setMethod("GenerateBootMatrix", signature(x="matrix", y="numeric"),
-function(x, y, replicates=50, type=c("unpaired", "paired", "onesample"),
+setMethod("GenerateBootMatrix", signature(x="missing", y="numeric"),
+function(y, replicates=50, type=c("unpaired", "paired", "onesample"),
          maxties=NA, minclassize=2, balancedclass=FALSE, balancedsample=FALSE, 
          control){
   ly <- length(y)
@@ -89,6 +89,7 @@ function(x, y, replicates=50, type=c("unpaired", "paired", "onesample"),
         checkfun <- function(z){
          row <- y[z]
          tab <- table(row)
+         if(is.na(tab[2])) tab <- c(tab, 0)                            
          if(tab[1] >= minclassize && tab[2] >= minclassize) return(z)
          else return(rep(NA,ly))}
        }
@@ -97,6 +98,7 @@ function(x, y, replicates=50, type=c("unpaired", "paired", "onesample"),
          row <- y[z]
          tab <- table(row)
          tab2 <- table(z)
+         if(is.na(tab[2])) tab <- c(tab, 0)                    
          if(tab[1] >= minclassize && tab[2] >= minclassize && (max(tab2) <= (maxties+1))) return(z)
          else return(rep(NA,ly))}
      }
@@ -164,7 +166,7 @@ function(x, y, replicates=50, type=c("unpaired", "paired", "onesample"),
       indbootm <- apply(bootm, 2, function(z) any(!is.na(z)))
       if(length(indbootm) < replicates){
         if(iter < maxiter){
-        cat("Not enough appropriate replications foud. Repeating... \n")
+        cat("Not enough appropriate replications found. Repeating... \n")
         next
         }
         else{
@@ -178,7 +180,7 @@ function(x, y, replicates=50, type=c("unpaired", "paired", "onesample"),
       uniqbootm <- unique(bootm, MARGIN=2)
       UNIQUE <- (ncol(uniqbootm) >= replicates)
       if(!UNIQUE){
-          if(iter < maxiter) cat("Not enough appropriate replications foud. Repeating... \n")
+          if(iter < maxiter) cat("Not enough appropriate replications found. Repeating... \n")
           else{
           warning("Desired Number of replications could not be generated. \n Check all arguments for validity.")
           replicates <- ncol(bootm)
@@ -260,10 +262,10 @@ function(x, y, replicates=50, type=c("unpaired", "paired", "onesample"),
 
 ### signature: x=matrix, y=factor.
 
-setMethod("GenerateBootMatrix", signature(x="matrix", y="factor"),
-function(x, y, replicates=50, type=c("unpaired", "paired", "onesample"),
+setMethod("GenerateBootMatrix", signature(x="missing", y="factor"),
+function(y, replicates=50, type=c("unpaired", "paired", "onesample"),
          maxties=NA, minclassize=2, balancedclass=FALSE, balancedsample=FALSE, control){
-         GenerateBootMatrix(x,as.numeric(y), replicates, type, maxties, minclassize, 
+         GenerateBootMatrix(as.numeric(y), replicates, type, maxties, minclassize, 
                             balancedsample, balancedclass, control)})
 
 ### signature: x=ExpressionSet, y=character
@@ -272,7 +274,7 @@ setMethod("GenerateBootMatrix", signature(x="ExpressionSet", y="character"),
 function(x, y, replicates=50, type=c("unpaired", "paired", "onesample"),
          maxties=NA, minclassize=2, balancedsample=FALSE, balancedclass=FALSE, 
          control){
-         GenerateBootMatrix(exprs(x),pData(x)[,y],replicates,type,maxties,minclassize,
+         GenerateBootMatrix(pData(x)[,y],replicates,type,maxties,minclassize,
                            balancedclass,balancedsample,control)})
                            
 

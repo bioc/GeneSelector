@@ -1,12 +1,9 @@
 \name{internals}
 \alias{combn}
 \alias{overlap}
-\alias{posterior1}
-\alias{posterior2}
-\alias{posterior3}
-\alias{posterior4}
+\alias{unioncount}
 \alias{getLambda}
-\alias{characterplot}
+\alias{AdjustPvalues}
 \title{Internal functions}
 \description{Not intended to be called directly by the user.}
 \keyword{univar}

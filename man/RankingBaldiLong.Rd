@@ -1,10 +1,13 @@
 \name{RankingBaldiLong}
 \alias{RankingBaldiLong}
+\alias{RankingBaldiLong-methods}
+\alias{RankingBaldiLong,matrix,numeric-method}
+\alias{RankingBaldiLong,matrix,factor-method}
+\alias{RankingBaldiLong,ExpressionSet,character-method}
 
 \title{Ranking based on the t-statistic of Baldi and Long}
 \description{
-  Performs bayesian t tests on a gene expression matrix.\cr
-  For \code{S4} method information, see \link{RankingBaldiLong-methods}.}
+  Performs bayesian t tests on a gene expression matrix.}
 \usage{
 RankingBaldiLong(x, y, type = c("unpaired", "paired", "onesample"), 
                   m = 100, conf = NULL, pvalues = TRUE, gene.names = NULL, ...)
@@ -24,12 +27,12 @@ RankingBaldiLong(x, y, type = c("unpaired", "paired", "onesample"),
            If \code{x} is an \code{ExpressionSet}, then \code{y}
            is a character specifying the phenotype variable in
            the output from \code{pData}.\cr
-           If \code{type = paired}, take care that the coding is
-           analogously to the requirement concerning \code{x}}
+           If \code{type = "paired"}, take care that the coding is
+           analogously to the requirement concerning \code{x}.}
   \item{type}{\describe{
                 \item{"unpaired":}{two-sample test.}
                 \item{"paired":}{paired test. Take care that the coding of \code{y}
-                                 is correct (s. above)}
+                                 is correct (s. above).}
                 \item{"onesample":}{\code{y} has only one level. 
                                     Test whether the true mean is different
                                     from zero.}
@@ -37,17 +40,17 @@ RankingBaldiLong(x, y, type = c("unpaired", "paired", "onesample"),
                                    
                 }}
   \item{m}{Size of the sliding window that is used obtain the background variance
-           from pooled similarly expressed genes. s. Details.}
-  \item{conf}{The number of 'pseudocounts' giving weight to the prior variance. s. Details.}
+           from pooled similarly expressed genes, s. details.}
+  \item{conf}{The number of 'pseudocounts' giving weight to the prior variance, s. details.}
   \item{pvalues}{Should p-values be computed ? Default is \code{TRUE}.}
   \item{gene.names}{An optional vector of gene names.}
   \item{\dots}{Currently unused argument.}
 }
 \details{
 The argument \code{m} determines the width of the window
-used to provides an estimate of the average variability of 
+used to obtain an estimate for the average variability of
 gene expression for those genes that show a similar expression level.\cr
-The argument \code{conf} is non-negative and indicates the weight give to the Bayesian prior estimate of within-treatment 
+The argument \code{conf} is non-negative and denotes the weight given to the Bayesian prior estimate of within-treatment
 variance. Baldi and Long report reasonable performance with this parameter set equal to approximately 3 times the number of 
 observations, when the number of experimental observations is small (approximately 4 or less). 
 If the number of replicate experimental observations is large then the confidence value can be lowered 
@@ -55,18 +58,18 @@ to be equal to the number of observations (or even less).
 }
 \value{An object of class \link{GeneRanking}.}
 \references{Baldi,P., Long, A.D. (2001). \cr
-            A bayesian framework for the analysis of microarray data.
+            A Bayesian framework for the analysis of microarray data.
             \emph{Bioinformatics, 17, 509-519}}
-\author{Martin Slawski \email{martin.slawski@campus.lmu.de} \cr
-        Anne-Laure Boulesteix \url{http://www.slcmsr.net/boulesteix}}
-\note{Results can differ slighlty from the Cyber-T-Software
+\author{Martin Slawski \cr
+        Anne-Laure Boulesteix}
+\note{Results can differ slightly from the Cyber-T-Software
       of Baldi and Long.}
 \seealso{
-         \link{GetRepeatRanking}, \link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
+         \link{RepeatRanking}, \link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
          \link{RankingFoxDimmic}, \link{RankingLimma}, 
           \link{RankingEbam}, \link{RankingWilcEbam}, \link{RankingSam}, 
           \link{RankingBstat}, \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
-          \link{RankingPermutation}, \link{RankingGap}}
+          \link{RankingPermutation}}
 \keyword{univar}
 \examples{
 ## Load toy gene expression data

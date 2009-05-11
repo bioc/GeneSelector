@@ -70,15 +70,15 @@ setMethod("RankingLimma", signature(x="matrix", y="numeric"),
            pvals <- outp$p.value[,1]
           }
            
-          ranking <- order(abs(statistic), decreasing=TRUE)
+          ranking <- rank(-abs(statistic))
           if(!is.null(gene.names))
             names(pvals) <- names(statistic) <- gene.names
           else{
           if(!is.null(rownames(x)))
             names(pvals) <- names(statistic) <- rownames(x)
           }
-          new("GeneRanking", x=x, y=as.factor(y), statistic=statistic[ranking],
-          ranking=ranking, pval=pvals[ranking], type=type, method="Limma")
+          new("GeneRanking", x=x, y=as.factor(y), statistic=statistic,
+          ranking=ranking, pval=pvals, type=type, method="Limma")
 })
 
 ### signature: x=matrix, y=factor.

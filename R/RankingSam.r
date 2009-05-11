@@ -63,19 +63,20 @@ setMethod("RankingSam", signature(x="matrix", y="numeric"),
                          logged2=TRUE)
           }
 
+                                    
           samtest <- samr(datobj, resp.type=sam.type, ...)
           statistic <- samtest$tt
           if(pvalues) pvals <- samr.pvalues.from.perms(statistic, samtest$ttstar)
           else pvals <- rep(NA, nrow(x))
-          ranking <- order(abs(statistic), decreasing=TRUE)
+          ranking <- rank(-abs(statistic))
           if(!is.null(gene.names))
             names(pvals) <- names(statistic) <- gene.names
           else{
           if(!is.null(rownames(x)))
             names(pvals) <- names(statistic) <- rownames(x)
           }
-          new("GeneRanking", x=x, y=as.factor(yinput), statistic=statistic[ranking],
-          ranking=ranking, pval=pvals[ranking], type=type, method="Sam")
+          new("GeneRanking", x=x, y = as.factor(y), statistic=statistic,
+          ranking=ranking, pval=pvals, type=type, method="Sam")
 })
 
 ### signature: x=matrix, y=factor.

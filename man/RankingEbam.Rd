@@ -1,11 +1,15 @@
 \name{RankingEbam}
 \alias{RankingEbam}
-\title{Ranking based on the empirical bayes approach of Efron}
+\alias{RankingEbam-methods}
+\alias{RankingEbam,matrix,numeric-method}
+\alias{RankingEbam,matrix,factor-method}
+\alias{RankingEbam,ExpressionSet,character-method}
+\title{Ranking based on the empirical Bayes approach of Efron et al. (2001)}
 \description{
-  The approach of Efron and colleagues is based on a mixture model
-  for subpopulations: genes that are differentially expressed and
-  those that are not. The posterior probability for differential
-  expression serves as statistic.
+  The approach of Efron et al. (2001) is based on a mixture model
+  for two subpopulations: genes that are differentially expressed and
+  those not. The posterior probability for differential
+  expression is used to obtain a ranking.
   The function described below is merely a wrapper for the
   function \code{z.ebam} from the package \code{siggenes}.\cr
   For \code{S4} method information, see \link{RankingEbam-methods}.  
@@ -17,7 +21,7 @@ RankingEbam(x, y, type = c("unpaired", "paired", "onesample"), gene.names = NULL
 \arguments{
   \item{x}{A \code{matrix} of gene expression values with rows
            corresponding to genes and columns corresponding to observations or alternatively an object of class \code{ExpressionSet}.\cr
-           If \code{type = paired}, the first half of the columns corresponds to 
+           If \code{type = "paired"}, the first half of the columns corresponds to 
            the first measurements and the second half to the second ones. 
            For instance, if there are 10 observations, each measured twice,
            stored in an expression matrix \code{expr}, 
@@ -28,7 +32,7 @@ RankingEbam(x, y, type = c("unpaired", "paired", "onesample"), gene.names = NULL
            If \code{x} is an \code{ExpressionSet}, then \code{y}
            is a character specifying the phenotype variable in
            the output from \code{pData}.\cr
-           If \code{type = paired}, take care that the coding is
+           If \code{type = "paired"}, take care that the coding is
            analogously to the requirement concerning \code{x}.}
   \item{type}{\describe{
                 \item{"unpaired":}{two-sample test.}
@@ -50,25 +54,25 @@ RankingEbam(x, y, type = c("unpaired", "paired", "onesample"), gene.names = NULL
   To find a better value for the fudge factor, the function 
   \code{find.a0} (package \code{siggenes}) can be used.
 }
-\note{p-values are \emph{not} computed - the statistic is
+\note{P-values are \emph{not} computed - the statistic is
       a posterior probabiliy.}
 \value{An object of class \link{GeneRanking}.}
 \references{Efron, B., Tibshirani, R., Storey, J.D., Tusher, V. (2001).\cr 
-             Empirical Bayes Analysis of a Microarray Experiment, 
-             \emph{JASA, 96, 1151-1160}.
+             Empirical Bayes Analysis of a Microarray Experiment. 
+             \emph{Journal of the American Statistical  Association, 96, 1151-1160}.
               
              Schwender, H., Krause, A. and Ickstadt, K. (2003).\cr
              Comparison of the Empirical Bayes and the Significance 
              Analysis of Microarrays. 
              \emph{Techical Report, University of Dortmund.}}
-\author{Martin Slawski \email{martin.slawski@campus.lmu.de} \cr
-        Anne-Laure Boulesteix \url{http://www.slcmsr.net/boulesteix}}
+\author{Martin Slawski \cr
+        Anne-Laure Boulesteix}
 \seealso{
-         \link{GetRepeatRanking}, \link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
+         \link{RepeatRanking}, \link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
           \link{RankingBaldiLong}, \link{RankingFoxDimmic}, \link{RankingLimma}, 
       \link{RankingWilcEbam}, \link{RankingSam}, 
           \link{RankingBstat}, \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
-          \link{RankingPermutation}, \link{RankingGap}}
+          \link{RankingPermutation}}
 \keyword{univar}
 \examples{
 ### Load toy gene expression data

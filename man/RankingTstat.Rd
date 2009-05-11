@@ -1,9 +1,12 @@
 \name{RankingTstat}
 \alias{RankingTstat}
+\alias{RankingTstat-methods}
+\alias{RankingTstat,matrix,numeric-method}
+\alias{RankingTstat,matrix,factor-method}
+\alias{RankingTstat,ExpressionSet,character-method}
 \title{Ranking based on the 'ordinary' t statistic.}
 \description{
-  Performs univariate (rowwise) t tests on a gene expression matrix.\cr
-  For \code{S4} method information, see \link{RankingTstat-methods}.
+  Performs univariate (rowwise) t tests on a gene expression matrix.
 }
 \usage{
 RankingTstat(x, y, type = c("unpaired", "paired", "onesample"), pvalues = TRUE, gene.names = NULL, ...)
@@ -11,7 +14,7 @@ RankingTstat(x, y, type = c("unpaired", "paired", "onesample"), pvalues = TRUE, 
 \arguments{
   \item{x}{A \code{matrix} of gene expression values with rows
            corresponding to genes and columns corresponding to observations or alternatively an object of class \code{ExpressionSet}.\cr
-           If \code{type = paired}, the first half of the columns corresponds to 
+           If \code{type = "paired"}, the first half of the columns corresponds to
            the first measurements and the second half to the second ones. 
            For instance, if there are 10 observations, each measured twice,
            stored in an expression matrix \code{expr}, 
@@ -22,13 +25,13 @@ RankingTstat(x, y, type = c("unpaired", "paired", "onesample"), pvalues = TRUE, 
            If \code{x} is an \code{ExpressionSet}, then \code{y}
            is a character specifying the phenotype variable in
            the output from \code{pData}.\cr
-           If \code{type = paired}, take care that the coding is
-           analogously to the requirement concerning \code{x}}. 
+           If \code{type = "paired"}, take care that the coding is
+           analogously to the requirement concerning \code{x}.}.
   \item{type}{\describe{
                 \item{"unpaired":}{two-sample test, equal variances assumed. \cr
                                    For unequal variances, use \link{RankingWelchT}.}
                 \item{"paired":}{paired test. Take care that the coding of \code{y}
-                                 is correct (s. above)}
+                                 is correct (s. above).}
                 \item{"onesample":}{\code{y} has only one level. 
                                     Test whether the true mean is different
                                     from zero.}
@@ -42,14 +45,14 @@ RankingTstat(x, y, type = c("unpaired", "paired", "onesample"), pvalues = TRUE, 
 }
 
 \value{An object of class \link{GeneRanking}.}
-\author{Martin Slawski \email{martin.slawski@campus.lmu.de} \cr
-        Anne-Laure Boulesteix \url{http://www.slcmsr.net/boulesteix}}
+\author{Martin Slawski  \cr
+        Anne-Laure Boulesteix}
 \seealso{
-         \link{GetRepeatRanking}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
+         \link{RepeatRanking}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
           \link{RankingBaldiLong}, \link{RankingFoxDimmic}, \link{RankingLimma}, 
           \link{RankingEbam}, \link{RankingWilcEbam}, \link{RankingSam}, 
           \link{RankingBstat}, \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
-          \link{RankingPermutation}, \link{RankingGap}}
+          \link{RankingPermutation}}
 \keyword{univar}
 \examples{
 ## Load toy gene expression data

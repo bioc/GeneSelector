@@ -4,41 +4,27 @@
 \alias{AggregatedRanking}
 %\alias{plot,AggregatedRanking,missing-method}
 \alias{show,AggregatedRanking-method}
+\alias{toplist,AggregatedRanking-method}
 
 \title{"AggregatedRanking"}
-\description{An object returned from the methods
-             \code{AggregateBayes} and \code{AggregateSimple}}
+\description{An object returned from one of the methods \code{AggregateSimple}, \code{AggregatePenalty}, \code{AggregateMC} or \code{AggregateSVD}.}
 
 \section{Slots}{
 	 \describe{
-    \item{\code{posterior}:}{A list of posterior distributions for
-                             each gene, ordered according to gene indices,
-                             not ranks. \code{NA} if \code{method="simple"}}
-    \item{\code{summary}:}{A numeric vector of summary ranks for each gene.
-                           \bold{In contrast} to \code{GeneRanking}, 
-                           there is no ordering, i.e. the first entry
-                           corresponds to the first gene \emph{index}
-                           (row 1 of the expression matrix).}
-    \item{\code{pval}:}{p-values from the original dataset (if exist), 
-                        otherwise a vector of \code{NA}s.}
-    \item{\code{type}:}{Describes the way of aggregation, either 
-                        \code{"bayesian"}, \code{"simple"}, \code{"penalty"}
-                        or \code{"pca"}.}
-    \item{\code{fun}:}{The function used for aggregation, s.
-                        \link{AggregateBayes} or \link{AggregateSimple}.}
-    \item{\code{method}:}{The ranking method used.}
+    \item{\code{ranking}:}{A numeric vector of ranks after aggregation.}
+    \item{\code{type}:}{The type of aggregation used (a character).}
+    \item{\code{measure}:}{The quantity used as basis for aggregation (a character).}
+    \item{\code{method}:}{The ranking method used originally, i.e. before aggregation.}
   }
 }
 \section{Methods}{
   \describe{
-    \item{show}{Use \code{show(AggregatedRanking-object)} for brief information.}
-    \item{\link[plot,AggregatedRanking-method]{plot}}{
-     Use \code{plot(GeneRanking-object, index=i)}
-     to show the posterior distribution for gene \code{i}
-     (if \code{type="bayesian"}).}
+    \item{show}{Use \code{show(object)} for brief information.}
+    \item{toplist}{Use \code{toplist(object, k=10)}
+                    to display the top \code{k=10} genes in the \emph{aggregated} ranking.}
 	 }
 }
 
-\author{Martin Slawski \email{martin.slawski@campus.lmu.de} \cr
-        Anne-Laure Boulesteix \url{http://www.slcmsr.net/boulesteix}}
+\author{Martin Slawski  \cr
+        Anne-Laure Boulesteix}
 \keyword{univar}

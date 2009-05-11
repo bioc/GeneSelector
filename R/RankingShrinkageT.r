@@ -104,15 +104,15 @@ setMethod("RankingShrinkageT", signature(x="matrix", y="numeric"),
 
           #if(pvalues) pvals <- 1 - pf(statistic^2, 1, dft)
           pvals <- rep(NA, nrow(x))
-          ranking <- order(abs(statistic), decreasing=TRUE)
+          ranking <- rank(-abs(statistic))
           if(!is.null(gene.names))
           names(pvals) <- names(statistic) <- gene.names
           else{
           if(!is.null(rownames(x)))
            names(pvals) <- names(statistic) <- rownames(x)
           }
-          new("GeneRanking", x=x, y=as.factor(y), statistic=statistic[ranking],
-          ranking=ranking, pval=pvals[ranking], type=type, method="ShrinkageT")
+          new("GeneRanking", x=x, y = as.factor(y), statistic=statistic,
+          ranking=ranking, pval=pvals, type=type, method="ShrinkageT")
 }
 )
 

@@ -57,15 +57,15 @@ setMethod("RankingFC", signature(x="matrix", y="numeric"),
           if(pvalues) pvals <-  2*(1-pnorm(abs(FC),lower.tail=TRUE))
           else pvals <- rep(NA, nrow(x))
           statistic <- FC
-          ranking <- order(abs(statistic), decreasing=TRUE)
+          ranking <- rank(-abs(statistic))
           if(!is.null(gene.names))
             names(pvals) <- names(statistic) <- gene.names
           else{
           if(!is.null(rownames(x)))
             names(pvals) <- names(statistic) <- rownames(x)
           }
-          new("GeneRanking", x=x, y=y, statistic=statistic[ranking],
-          ranking=ranking, pval=pvals[ranking], type=type, method="Foldchange")
+          new("GeneRanking", x=x, y=y, statistic=statistic,
+          ranking=ranking, pval=pvals, type=type, method="Foldchange")
 }
 )
 

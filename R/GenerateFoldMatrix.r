@@ -14,7 +14,7 @@
 #
 #
 ### Further comments and notes:
-#
+                                        #
 #   Very difficult and unperfect function.
 #   Checks needed.
 #   Can take a lot of time for big samplesize/k.
@@ -24,14 +24,13 @@
 
 ### generic function
 
-setGeneric("GenerateFoldMatrix", function(x, y, k=1, replicates = ifelse(k==1, ncol(x), 10), type=c("unpaired", "paired", "onesample"),
-            minclassize=2, balanced=FALSE, control)
-standardGeneric("GenerateFoldMatrix"))
+setGeneric("GenerateFoldMatrix", function(x, y, k=1, replicates = ifelse(k==1, length(y), 10), type=c("unpaired", "paired", "onesample"),
+            minclassize=2, balanced=FALSE, control) standardGeneric("GenerateFoldMatrix"))
 
 ### signature: x=matrix, y=numeric.
 
-setMethod("GenerateFoldMatrix", signature(x="matrix", y="numeric"),
-function(x, y, k=1, replicates=ifelse(k==1, ncol(x), 10), type=c("unpaired", "paired", "onesample"),
+setMethod("GenerateFoldMatrix", signature(x = "missing", y="numeric"),
+          function(y, k=1, replicates=ifelse(k==1, length(y), 10), type=c("unpaired", "paired", "onesample"),
          minclassize=2, balanced=FALSE, control){
 type <- match.arg(type)
 k <- as.integer(k)
@@ -50,7 +49,7 @@ else if(k < 1 | k > ly-2) stop("Invalid k (<1 or > (length of samples - 2)). \n"
   if(length(unique(y[1:taby[1]])) != 1 | length(unique(y[-c(1:taby[1])])) != 1)
            stop("Incorrect coding for type='paired'. \n")
   }
-  if(k == 1){
+                                                 if(k == 1){
     if(is.element(type, c("unpaired", "onesample"))){
       foldm <- diag(1, nrow=ly)
       mode(foldm) <- "logical"
@@ -97,7 +96,9 @@ else if(k < 1 | k > ly-2) stop("Invalid k (<1 or > (length of samples - 2)). \n"
          row[z] <- y[z]
          tab <- table(row)
          y1 <- tab[names(taby)[1]]
+         if(is.na(y1)) y1 <- 0                         
          y2 <- tab[names(taby)[2]]
+         if(is.na(y2)) y2 <- 0                        
          if((taby[1]-y1) >= minclassize && (taby[2]-y2) >= minclassize) return(row)
          else return(rep(NA,ly))}
          }
@@ -113,7 +114,7 @@ else if(k < 1 | k > ly-2) stop("Invalid k (<1 or > (length of samples - 2)). \n"
         indfoldm <- apply(foldm, 2, function(z) any(!is.na(z)))
         if(length(indfoldm) < replicates){
           if(iter < maxiter){
-          cat("Not enough appropriate replications foud. Repeating... \n")
+          cat("Not enough appropriate replications found. Repeating... \n")
           next
           }
           else{
@@ -230,10 +231,10 @@ else if(k < 1 | k > ly-2) stop("Invalid k (<1 or > (length of samples - 2)). \n"
 
 ### signature: x=matrix, y=factor.
 
-setMethod("GenerateFoldMatrix", signature(x="matrix", y="factor"),
-function(x, y, k=1, replicates=ifelse(k==1, ncol(x), 10), type=c("unpaired", "paired", "onesample"),
+setMethod("GenerateFoldMatrix", signature(x = "missing", y="factor"),
+function(y, k=1, replicates=ifelse(k==1, length(y), 10), type=c("unpaired", "paired", "onesample"),
          minclassize=2, balanced=FALSE, control){
-         GenerateFoldMatrix(x,as.numeric(y),k,replicates,type,minclassize, balanced,
+         GenerateFoldMatrix(as.numeric(y),k,replicates,type,minclassize, balanced,
                            control)})
                            
 ### signature: x=ExpressionSet, y=character
@@ -241,7 +242,7 @@ function(x, y, k=1, replicates=ifelse(k==1, ncol(x), 10), type=c("unpaired", "pa
 setMethod("GenerateFoldMatrix", signature(x="ExpressionSet", y="character"),
 function(x, y, k=1, replicates=ifelse(k==1, ncol(exprs(x)), 10), type=c("unpaired", "paired", "onesample"),
          minclassize=2, balanced=FALSE, control){
-         GenerateFoldMatrix(exprs(x),pData(x)[,y],k,replicates,type,minclassize,
+         GenerateFoldMatrix(pData(x)[,y],k,replicates,type,minclassize,
                            balanced, control)})
                            
 

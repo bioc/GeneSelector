@@ -83,126 +83,174 @@ overlap <- function (x1, x2, n)
     return(x)
 }
 
+### [4] function for union count
+
+unioncount <- function(M){
+     p <- nrow(M)
+     B <- ncol(M)
+     active <- unique(M[1,])
+     count <-  numeric(p)
+     count[1] <- length(active)
+      for(j in 2:p){
+       mj <- M[j,] %in% active
+       if(length(mj) == 0) active <- c(active, M[j,])
+       else active <- c(active, unique(M[j,!mj]))
+       count[j] <- length(active)
+       if(count[j]  >=  p){
+        count[j] <- p
+        break
+        }
+
+     }
+     if((j+1) <= p)  count[(j+1):p] <- p
+       count
+    }
+    
+### [5] function for p-value adjustment (for GeneSelector)
+
+AdjustPvalues <- function(pval,
+                          method=c("BH", "qvalue", "Bonferroni", "Holm", "Hochberg", "SidakSS", "SidakSD", "BY"))
+{
+ if(any(pval < 0 | pval > 1))
+ stop("Raw p-values are not contained in the unit interval \n")
+ method <- match.arg(method)
+ if(!is.element(method, eval(formals(AdjustPvalues)$method)))
+ stop("Invalid method specified. \n")
+ if(method != "qvalue"){
+ require(multtest, quietly=TRUE)
+ outp <- mt.rawp2adjp(pval, proc=method)
+ adjpval <- outp$adjp[order(outp$index),-1]
+ }
+ else{
+   require(siggenes, quietly=TRUE)
+   p0 <- pi0.est(pval)
+   adjpval <- siggenes:::qvalue.cal(pval, p0$p0, version = 2)
+   }
+ return(adjpval)
+}
+
+
+
 ### [4] function for posterior distributions for AggregateBayes.r
 
-posterior1 <- function(x, omega, tau, p){
-lx <- length(x)
-rb <- numeric(lx-1)
-r0 <- x[1]
-rb <- x[2:lx]
-mu0 <- weighted.mean(rb, omega)
-omega <- omega/mean(omega) 
-sigmahat <- mad(abs(rb-mu0)*omega, constant=1)
+#posterior1 <- function(x, omega, tau, p){
+#lx <- length(x)
+#rb <- numeric(lx-1)
+#r0 <- x[1]
+#rb <- x[2:lx]
+#mu0 <- weighted.mean(rb, omega)
+#omega <- omega/mean(omega)
+#sigmahat <- mad(abs(rb-mu0)*omega, constant=1)
+#
+#if(sigmahat < .Machine$double.eps){
+#    post <- 1
+#    names(post) <- mu0
+#    return(post)
+#   }
+#else{
+#lower <- max(1, r0-round(3*tau))
+#upper <- min(r0+round(3*tau), p)
+#supp <- lower:upper
+#prior <- dnorm(supp, mean=r0, sd=tau)
+#lik <- exp(sapply(supp, function(zz)
+#                  sum(dnorm(rb[rb %in% supp], mean=zz, sd=sigmahat, log=TRUE))))
+#unpost <- lik*prior
+#if(all(unpost < .Machine$double.eps)) unpost <- prior
+#post <- unpost/sum(unpost)
+#names(post) <- as.character(supp)
+#return(post)
+#}
+#}
 
-if(sigmahat < .Machine$double.eps){ 
-    post <- 1
-    names(post) <- mu0
-    return(post)
-   }
-else{
-lower <- max(1, r0-round(3*tau))
-upper <- min(r0+round(3*tau), p)
-supp <- lower:upper
-prior <- dnorm(supp, mean=r0, sd=tau)
-lik <- exp(sapply(supp, function(zz)
-                  sum(dnorm(rb[rb %in% supp], mean=zz, sd=sigmahat, log=TRUE))))
-unpost <- lik*prior                  
-if(all(unpost < .Machine$double.eps)) unpost <- prior
-post <- unpost/sum(unpost)
-names(post) <- as.character(supp)
-return(post)
-}
-}
 
+#posterior2 <- function(x, omega, p){
+#lx <- length(x)
+#tau <- x[1]
+#rb <- numeric(lx-2)
+#r0 <- x[2]
+#rb <- x[3:lx]
+#mu0 <- weighted.mean(rb, omega)
+#omega <- omega/mean(omega)
+#sigmahat <- mad(abs(rb-mu0)*omega, constant=1)
 
-posterior2 <- function(x, omega, p){
-lx <- length(x)
-tau <- x[1]
-rb <- numeric(lx-2)
-r0 <- x[2]
-rb <- x[3:lx]
-mu0 <- weighted.mean(rb, omega)
-omega <- omega/mean(omega) 
-sigmahat <- mad(abs(rb-mu0)*omega, constant=1)
+#if(sigmahat < .Machine$double.eps){
+#    post <- 1
+#    names(post) <- mu0
+#    return(post)
+#   }
+#else{
+#lower <- max(1, r0-round(3*tau))
+#upper <- min(r0+round(3*tau), p)
+#supp <- lower:upper
+#prior <- dnorm(supp, mean=r0, sd=tau)
+#lik <- exp(sapply(supp, function(zz)
+#                  sum(dnorm(rb[rb %in% supp], mean=zz, sd=sigmahat, log=TRUE))))
+#unpost <- lik*prior
+#if(all(unpost < .Machine$double.eps)) unpost <- prior
+#post <- unpost/sum(unpost)
+#names(post) <- as.character(supp)
+#return(post)
+#}
+#}
 
-if(sigmahat < .Machine$double.eps){ 
-    post <- 1
-    names(post) <- mu0
-    return(post)
-   }
-else{
-lower <- max(1, r0-round(3*tau))
-upper <- min(r0+round(3*tau), p)
-supp <- lower:upper
-prior <- dnorm(supp, mean=r0, sd=tau)
-lik <- exp(sapply(supp, function(zz)
-                  sum(dnorm(rb[rb %in% supp], mean=zz, sd=sigmahat, log=TRUE))))
-unpost <- lik*prior                  
-if(all(unpost < .Machine$double.eps)) unpost <- prior
-post <- unpost/sum(unpost)
-names(post) <- as.character(supp)
-return(post)
-}
-}
+#posterior3 <- function(x, omega, tau, p){
+#lx <- length(x)
+#rb <- numeric(lx-1)
+#r0 <- x[1]
+#rb <- x[2:lx]
+#mu0 <- weighted.mean(rb, omega)
+#omega <- omega/mean(omega)
+#sigmahat <- sqrt(sum(omega*(rb - mu0)^2)/sum(omega))
 
-posterior3 <- function(x, omega, tau, p){
-lx <- length(x)
-rb <- numeric(lx-1)
-r0 <- x[1]
-rb <- x[2:lx]
-mu0 <- weighted.mean(rb, omega)
-omega <- omega/mean(omega) 
-sigmahat <- sqrt(sum(omega*(rb - mu0)^2)/sum(omega))
+#if(sigmahat < .Machine$double.eps){
+#    post <- 1
+#    names(post) <- mu0
+#    return(post)
+#   }
+#else{
+#lower <- max(1, r0-round(3*tau))
+#upper <- min(r0+round(3*tau), p)
+#supp <- lower:upper
+#prior <- dnorm(supp, mean=r0, sd=tau)
+#lik <- exp(sapply(supp, function(zz)
+#                  sum(dnorm(rb[rb %in% supp], mean=zz, sd=sigmahat, log=TRUE))))
+#unpost <- lik*prior
+#if(all(unpost < .Machine$double.eps)) unpost <- prior
+#post <- unpost/sum(unpost)
+#names(post) <- as.character(supp)
+#return(post)
+#}
+#}
 
-if(sigmahat < .Machine$double.eps){ 
-    post <- 1
-    names(post) <- mu0
-    return(post)
-   }
-else{
-lower <- max(1, r0-round(3*tau))
-upper <- min(r0+round(3*tau), p)
-supp <- lower:upper
-prior <- dnorm(supp, mean=r0, sd=tau)
-lik <- exp(sapply(supp, function(zz)
-                  sum(dnorm(rb[rb %in% supp], mean=zz, sd=sigmahat, log=TRUE))))
-unpost <- lik*prior                  
-if(all(unpost < .Machine$double.eps)) unpost <- prior
-post <- unpost/sum(unpost)
-names(post) <- as.character(supp)
-return(post)
-}
-}
+#posterior4 <- function(x, omega, p){
+#lx <- length(x)
+#tau <- x[1]
+#rb <- numeric(lx-2)
+#r0 <- x[2]
+#rb <- x[3:lx]
+#mu0 <- weighted.mean(rb, omega)
+#omega <- omega/mean(omega)
+#sigmahat <- sqrt(sum(omega*(rb - mu0)^2)/sum(omega))
 
-posterior4 <- function(x, omega, p){
-lx <- length(x)
-tau <- x[1]
-rb <- numeric(lx-2)
-r0 <- x[2]
-rb <- x[3:lx]
-mu0 <- weighted.mean(rb, omega)
-omega <- omega/mean(omega) 
-sigmahat <- sqrt(sum(omega*(rb - mu0)^2)/sum(omega))
-
-if(sigmahat < .Machine$double.eps){ 
-    post <- 1
-    names(post) <- mu0
-    return(post)
-   }
-else{
-lower <- max(1, r0-round(3*tau))
-upper <- min(r0+round(3*tau), p)
-supp <- lower:upper
-prior <- dnorm(supp, mean=r0, sd=tau)
-lik <- exp(sapply(supp, function(zz)
-                  sum(dnorm(rb[rb %in% supp], mean=zz, sd=sigmahat, log=TRUE))))
-unpost <- lik*prior                  
-if(all(unpost < .Machine$double.eps)) unpost <- prior
-post <- unpost/sum(unpost)
-names(post) <- as.character(supp)
-return(post)
-}
-}
+#if(sigmahat < .Machine$double.eps){
+#    post <- 1
+#    names(post) <- mu0
+#    return(post)
+#   }
+#else{
+#lower <- max(1, r0-round(3*tau))
+#upper <- min(r0+round(3*tau), p)
+#supp <- lower:upper
+#prior <- dnorm(supp, mean=r0, sd=tau)
+#lik <- exp(sapply(supp, function(zz)
+#                  sum(dnorm(rb[rb %in% supp], mean=zz, sd=sigmahat, log=TRUE))))
+#unpost <- lik*prior
+#if(all(unpost < .Machine$double.eps)) unpost <- prior
+#post <- unpost/sum(unpost)
+#names(post) <- as.character(supp)
+#return(post)
+#}
+#}
 
 ### [5] Tuning for the SoftThresholded t-Statistic from Wu.
 ###     adapted from K. Strimmer. 
@@ -235,9 +283,9 @@ getLambda <- function(di, si, method = c("cor", "lowess"))
     return(Lam.Opt)
 }
 
-#### [6] For the Genekiller Distance Plot
+#### [6] For the GeneSelector Distance Plot
 
-characterplot <- function(char, x, y, deltax, deltay, cex=1){
-spltchar <- unlist(strsplit(char, ""))
-for(s in seq(along=spltchar)) points(x+(s-1)*deltax, y+deltay, pch=spltchar[s], cex=cex)
-}
+#characterplot <- function(char, x, y, deltax, deltay, cex=1){
+#spltchar <- unlist(strsplit(char, ""))
+#for(s in seq(along=spltchar)) points(x+(s-1)*deltax, y+deltay, pch=spltchar[s], cex=cex)
+#}

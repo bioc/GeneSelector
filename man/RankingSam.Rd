@@ -1,9 +1,12 @@
 \name{RankingSam}
 \alias{RankingSam}
+\alias{RankingSam-methods}
+\alias{RankingSam,matrix,numeric-method}
+\alias{RankingSam,matrix,factor-method}
+\alias{RankingSam,ExpressionSet,character-method}
 \title{Ranking based on the SAM statistic}
 \description{
-  A wrapper function to the \code{samr} package.\cr
-  For \code{S4} method information, see \link{RankingSam-methods}. 
+  A wrapper function to the \code{samr} package.
 }
 \usage{
 RankingSam(x, y, type = c("unpaired", "paired", "onesample"), pvalues = TRUE, gene.names = NULL, ...)
@@ -22,12 +25,12 @@ RankingSam(x, y, type = c("unpaired", "paired", "onesample"), pvalues = TRUE, ge
            If \code{x} is an \code{ExpressionSet}, then \code{y}
            is a character specifying the phenotype variable in
            the output from \code{pData}.\cr
-           If \code{type = paired}, take care that the coding is
-           analogously to the requirement concerning \code{x}}
+           If \code{type = "paired"}, take care that the coding is
+           analogously to the requirement concerning \code{x}.}
   \item{type}{\describe{
                 \item{"unpaired":}{two-sample test.}
                 \item{"paired":}{paired test. Take care that the coding of \code{y}
-                                 is correct (s. above)}
+                                 is correct (s. above).}
                 \item{"onesample":}{\code{y} has only one level. 
                                     Test whether the true mean is different
                                     from zero.}
@@ -39,7 +42,7 @@ RankingSam(x, y, type = c("unpaired", "paired", "onesample"), pvalues = TRUE, ge
   \item{\dots}{Further arguments to be passed to \code{samr}. Consult
                the help of the \code{samr} package for details.}
 }
-\note{The computing is relatively high, due to the fact that permutation
+\note{The computing time is relatively high, due to the fact that permutation
       statistics are generated.}
       
 \value{An object of class \link{GeneRanking}.}
@@ -53,14 +56,14 @@ RankingSam(x, y, type = c("unpaired", "paired", "onesample"), pvalues = TRUE, ge
              \emph{Technical Report, University of Dortmund.}  
              }
 
-\author{Martin Slawski \email{martin.slawski@campus.lmu.de} \cr
-        Anne-Laure Boulesteix \url{http://www.slcmsr.net/boulesteix}}
+\author{Martin Slawski \cr
+        Anne-Laure Boulesteix}
 \seealso{
-         \link{GetRepeatRanking}, \link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
+         \link{RepeatRanking}, \link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
           \link{RankingBaldiLong}, \link{RankingFoxDimmic}, \link{RankingLimma}, 
           \link{RankingEbam}, \link{RankingWilcEbam}, 
           \link{RankingBstat}, \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
-          \link{RankingPermutation}, \link{RankingGap}}
+          \link{RankingPermutation}}
 \keyword{univar}
 \examples{
 ### Load toy gene expression data

@@ -5,10 +5,10 @@
 ### email: <Martin.Slawski@campus.lmu.de>
 ### date of creation: 16.8.2007
 ### date(s) of updates:
-#   17.8.2007; 23.8.2007 ; 27.8.2007 ; 28.8.2007; 3.9.2007; 10.9.2007; 11.9.2007;
+                                        #   17.8.2007; 23.8.2007 ; 27.8.2007 ; 28.8.2007; 3.9.2007; 10.9.2007; 11.9.2007;
 #   25.9.2007; 26.9.2007
 ### Brief description:
-#
+                                        #
 #   Stores the class definitions and convenience methods for them,
 #   is frequently updated.
 #
@@ -21,15 +21,15 @@
 #+++++++++++ Class: GeneRanking +++++++++++++++++++++++++++++++++++++++++++++++#
 
 setClass(Class="GeneRanking",
-        representation(x="matrix", y="factor", statistic="numeric", ranking="numeric",
+         representation(x = "matrix", y = "factor", statistic="numeric", ranking="numeric",
                         pval="vector", type="character", method="character"))
 
-### show-method: can still be improved w.r.t to method output
+### show-method: can still be improved w.r.t. method output
 ### -> will be kept for simplicity -- would require 'switch'
                         
 setMethod("show", signature="GeneRanking", function(object){
-          cat("Ranking by ", object@method, "\n", sep="")
-          cat("number of genes: ", length(object@statistic), "\n", sep="")
+          cat("Ranking by ", object@method, ",\n", sep="")
+          cat("number of genes: ", length(object@statistic), ".\n", sep="")
           })
 
 ### summary-method
@@ -42,16 +42,22 @@ setMethod("summary", signature="GeneRanking", function(object){
            colnames(summ) <- "statistic"
            print(summ)
            }
-          else cbind(statistic=summary(object@statistic), p_values=summary(object@pval))}
+          else{
+                summ <- summary(object@statistic)
+                indpp <- match(round(as.numeric(summ),3), round(object@statistic, 3))
+                pp <- object@pval[indpp]
+                cbind(statistic=summ, p_value = pp)
+              }
+                                                               }
           )
           
-### toplist-method
+### toplist-method GEÄNDERT 18/11/2008.
 
 setGeneric("toplist", function(object, top=10, show=TRUE,...) standardGeneric("toplist"))
 
-setMethod("toplist", signature(object="GeneRanking"), function(object, show=TRUE, top=10){
-          ind <- object@ranking[1:top]
-          ret <- data.frame(index=ind, statistic=object@statistic[1:top], pvals=object@pval[1:top])
+setMethod("toplist", signature(object="GeneRanking"), function(object, top=10, show = TRUE){
+          ind <- match(1:top, object@ranking)
+          ret <- data.frame(index=ind, statistic=object@statistic[ind], pval=object@pval[ind])
           rownames(ret) <- NULL
           if(show) print(ret)
           invisible(ret)
@@ -166,19 +172,23 @@ setMethod("summary", signature="BootMatrix", function(object, repl=1){
           print(tabmatrix[repl,])
           })
               
-#+++++++++++ Class: RepeatRanking +++++++++++++++++++++++++++++++++++++++++++++#
+#+++++++++++ Class: Repeated Ranking +++++++++++++++++++++++++++++++++++++++++++++#
+### NOTE: CLASS RENAMED 24/11/2008
 
-setClass(Class="RepeatRanking",
+setClass(Class="RepeatedRanking",
         representation(original="GeneRanking", rankings="matrix", pvals="matrix",
                        statistics = "matrix", scheme="character"))
                        
-setMethod("show", signature="RepeatRanking", function(object){
+setMethod("show", signature="RepeatedRanking", function(object){
           cat(ncol(object@rankings), " rankings with scheme '", object@scheme, "' \n", sep="")
           cat("Method used: ", object@original@method, "\n", sep="")
           })
           
-setMethod("toplist", signature(object="RepeatRanking"), function(object, top=10, show=TRUE){
-          inds <- apply(object@rankings, 2, function(z) z[1:top])
+### GEÄNDERT 18/11/2008.
+          
+setMethod("toplist", signature(object="RepeatedRanking"), function(object, top=10, show=TRUE){
+          inds <- apply(object@rankings, 2, function(z) match(1:top, z))  ## ok
+          if(top == 1) inds <- t(inds)                                                                                    
           uniqinds <- unique(as.vector(inds))
           emptytab <- numeric(length(uniqinds))
           names(emptytab) <- as.character(uniqinds)
@@ -188,327 +198,599 @@ setMethod("toplist", signature(object="RepeatRanking"), function(object, top=10,
                                                        return(emptytab)})
           rown <- rownames(genetable)
           ord <- order(genetable[,1], decreasing=TRUE)
-          genetableord <- genetable[ord,]
+          genetableord <- genetable[ord,,drop = FALSE]
           printgenetable <- data.frame(genetableord)
           rownames(genetableord) <- rown
           colnames(printgenetable) <- paste("Rank ", 1:top, sep="")     
-          cat("original dataset: \n \n")
-          orig <- object@original@ranking[1:top]
-          print(data.frame(index=orig, statistic=object@original@statistic[1:top], pvals=object@original@pval[1:top]))
+
+          orig <- match(1:top, object@original@ranking)
+          if(object@scheme != "merged (methods)"){
+          cat("original dataset: \n \n")  
+          print(data.frame(index=orig, statistic=object@original@statistic[orig], pvals=object@original@pval[orig]))
           cat("\n \n")
           toplists <- vector(mode="list", length=ncol(object@rankings))
            
           for(i in 1:ncol(object@rankings)){
-          toplists[[i]] <- data.frame(index=inds[,i], statistic=object@statistics[1:top,i], 
-                                      pvals=object@pvals[1:top,i])
+          toplists[[i]] <- data.frame(index=inds[,i], statistic=object@statistics[inds[,i],i],
+                                      pvals=object@pvals[inds[,i],i])
           if(show){
               cat("Replication", i, ": \n \n")
               print(toplists[[i]])
               cat("\n \n")
             }
+           }
           }
-          if(show){ 
+          else{
+             cat("reference method: \n \n")  
+            print(data.frame(index=orig))
+          cat("\n \n")
+          toplists <- vector(mode="list", length=ncol(object@rankings))
+           
+          for(i in 1:ncol(object@rankings)){
+          toplists[[i]] <- data.frame(index=inds[,i])
+          if(show){
+              cat("Replication", i, ": \n \n")
+              print(toplists[[i]])
+              cat("\n \n")
+            }
+           }
+          }  
+          #if(show){ 
           cat("In the following table, rownames correspond to gene indices. \n") 
           cat("The columns contain the absolute frequencies for the corresponding ranks \n")
           cat("over all replications. \n") 
           cat("Genes are ordered according to the first column, then to the second, and so on. \n \n")
           print(printgenetable)
           cat("\n \n")
-          }
+          #}
           return(invisible(toplists))})
+          
+### GEÄNDERT 24/11/2008.
           
 setGeneric("plot")
 
-setMethod("plot", signature("RepeatRanking", "missing"),
+setMethod("plot", signature("RepeatedRanking", "missing"),
           function(x, frac=1/100, ...){
-          if(frac < 0 | frac > 1) stop("frac must be between 0 and 1. \n")
+          if(frac < 0 | frac > 1) stop("'frac' must be between 0 and 1. \n")
           dotsCall <- substitute(list(...))
           ll <- eval(dotsCall)
-          if(!hasArg(xlab)) ll$xlab <- "Ranks in the orginal dataset"
+          if(!hasArg(xlab)) ll$xlab <- "Rank in the original dataset"
           if(!hasArg(ylab)) ll$ylab <- "Ranks in perturbed datasets"
           if(!hasArg(cex))  ll$cex <- 0.5
           if(!hasArg(main)) ll$main <- ""
           ngenes <- ceiling(nrow(x@rankings)*frac)
           ll$x <- ll$y <- 1:ngenes 
           ll$type <- "n"
+          ll$xlim <- c(1, ngenes)                             
           ll$ylim <- c(0, 2*ngenes)
-          do.call(plot, args=ll)
+          do.call("plot", args=ll)
           abline(0,1, lwd=2.5, col="blue")
           ll$type <- "p"
+          ngenesind <- match(1:ngenes, x@original@ranking)
           for(i in 1:ncol(x@rankings)){
-          ll$y <- match(x@original@ranking[1:ngenes], 
-                       x@rankings[,i])
-          do.call(points, args=ll)               
+          ll$y <- x@rankings[ngenesind,i]
+          do.call("points", args=ll)               
           }
           }
           )
           
-### join-Method still needs testing ! ->> done
+### join-Method replaced by "MergeRanking" 18/11/2008, 24/11/2008
+### DOCUMENTATION !
 
-setGeneric("join", function(RR1, RR2) standardGeneric("join"))
+### area of application: same original ranking (-> same method in original ranking),
+### but different perturbation schemes (GetRepeatRanking).
+
+setGeneric("MergeRankings", function(RR1, RR2) standardGeneric("MergeRankings"))
                   
-setMethod("join", signature("RepeatRanking", "RepeatRanking"),
+setMethod("MergeRankings", signature("RepeatedRanking", "RepeatedRanking"),
            function(RR1, RR2){
-          r1 <- RR1@rankings
-          r2 <- RR2@rankings
+           r1 <- RR1@rankings
+           r2 <- RR2@rankings
+           lr1 <- ncol(r1)
+           lr2 <- ncol(r2)                   
           if(!identical(RR1@original, RR2@original))
           stop("Input arguments do not match, different original ranking \n")
           if(nrow(r1) != nrow(r2)) 
           stop("Input arguments do not match, different number of rows in ranking matrix \n")
           if(RR1@original@method != RR2@original@method)
-          stop("Input arguments do not match, different ranking methods used")
+          stop("Input arguments do not match, different ranking methods used \n")
            r12 <- cbind(r1, r2)
            t12 <- cbind(RR1@statistics, RR2@statistics)
-           if(is.na(RR1@pvals)[1]) p12 <- NA 
+           if(any(is.na(RR1@pvals)) || any(is.na(RR2@pvals))) p12 <- matrix(NA, ncol = lr1+lr2,nrow = nrow(r1)) 
            else p12 <- cbind(RR1@pvals, RR2@pvals)
-           lr1 <- ncol(r1)
-           lr2 <- ncol(r2)
-           colnames(r12) <- colnames(p12) <- colnames(t12) <- rep("", (lr1+lr2))
-           colnames(r12)[1:lr1] <- colnames(p12)[1:lr1] <- colnames(t12)[1:lr1] <- rep(RR1@scheme, lr1)
-           colnames(r12)[-(1:lr1)] <- colnames(p12)[-(1:lr1)] <- colnames(t12)[-(1:lr1)] <- rep(RR2@scheme, lr2) 
-           scheme <- "combined"
-           new("RepeatRanking", original=RR1@original, rankings=r12, pvals=p12, statistics = t12, scheme=scheme)
+           
+           colnames(r12) <- colnames(p12) <- colnames(t12) <- character((lr1+lr2))
+           colnames(r12)[1:lr1] <- colnames(p12)[1:lr1] <- colnames(t12)[1:lr1] <- paste(rep(RR1@scheme, lr1), 1:lr1, sep="")
+           colnames(r12)[-(1:lr1)] <- colnames(p12)[-(1:lr1)] <- colnames(t12)[-(1:lr1)] <- paste(rep(RR2@scheme, lr2), 1:lr2, sep="")  
+           scheme <- "merged (rankings)"
+           new("RepeatedRanking", original=RR1@original, rankings=r12, pvals=p12, statistics = t12, scheme=scheme)
           } 
          )
          
-         
-### needs still documentation !!!
 
-setGeneric("variance", function(RR, estimator = c("var", "mad", "iqr"), center = c("perturbed", "original"))
-            standardGeneric("variance"))
+### Note 1: 1st method in 'Rlist' will be treated as original.
+### Note 2: Aggregated Rankings (over different datasets) are admitted.
+### Note 3: Functionality adapted from HeatMapMethods, PCAMethods
+### Note 4: HeatMapMethods, PCAmethods will be shortened by referring
+### to this method.
+### Note 5: Completely different from MergeRankings.
+### Note 6: Intention: Aggregation over different test statistics.
 
-setMethod("variance", signature("RepeatRanking"),
-           function(RR, estimator = c("var", "mad", "iqr"), center = c("perturbed", "original")){
-           ranking <- RR@rankings
-           ranking <- apply(ranking, 2, function(z) match(1:nrow(ranking), z))
-           if(ncol(ranking) < 2) stop("Too few replications in the argument 'RR'; variance cannot be estimated \n")
-           ord <- r0 <- RR@original@ranking
-           r0 <- match(1:nrow(ranking), r0)
-           estimator <- match.arg(estimator)
-           center <- match.arg(center)
-           if(!is.element(estimator, c("var", "mad", "iqr")))
-           stop("Invalid 'estimator' specified \n")
-           if(!is.element(center, c("perturbed", "original")))
-           stop("Invalid 'center' specified \n")
-           if(estimator == "iqr"){
-            iqrs <- apply(ranking, 1, IQR)[ord]
-            names(iqrs) <- paste("top gene", 1:nrow(ranking)) 
-            return(iqrs)
-           }
-            if(estimator == "var"){
-             if(center == "perturbed")
-              vars <- apply(ranking, 1, var)[ord]
-             else{
-              vars <- 1/(ncol(ranking)-1)*rowSums((ranking - r0)^2)[ord]
-              }
-              names(vars) <- paste("top gene", 1:nrow(ranking)) 
-              return(vars)
+setGeneric("MergeMethods", function(Rlist) standardGeneric("MergeMethods"))
+
+setMethod("MergeMethods", signature(Rlist = "list"), function(Rlist) {
+
+if(length(Rlist) < 2) stop("'Rlist' must contain at least two elements \n")
+clRlist <- unlist(lapply(Rlist, class))
+clind <- (clRlist=="GeneRanking")
+if(any(!is.element(clRlist, c("GeneRanking", "AggregatedRanking"))))
+stop("All elements of 'Rlist' must be of class 'GeneRanking' or 'AggregatedRanking' \n")
+
+ll <- length(Rlist)
+RR <- lapply(Rlist, function(z) slot(z, name="ranking"))
+lr <- unlist(lapply(RR, length))
+if(length(unique(lr)) != 1) stop("All rankings must have the same length \n")
+lmethods <- unlist(lapply(Rlist, function(z) slot(z, name="method")))
+if(length(unique(lmethods)) != length(lmethods))
+warning("At least one method occurs more than once \n")
+
+nro <- length(RR[[1]])
+Rmat <- matrix(unlist(RR), nrow=nro, ncol=ll)
+colnames(Rmat) <- lmethods                                                                      
+###  NOTE: BY CONVENTION, first entry of the list will constitute the original
+###  ranking.
+if(class(Rlist[[1]]) != "GeneRanking"){
+ original <- new("GeneRanking", x = matrix(0), y = factor(0), statistic = NA,
+                  ranking = Rmat[,1], pval = NA, method = slot(Rlist[[1]], "method"),
+                  type = "")}
+ else original <- Rlist[[1]]
+
+
+new("RepeatedRanking", original = original, rankings = Rmat[,-1,drop = FALSE],
+     pvals = matrix(NA), statistics = matrix(NA), scheme = "merged (methods)")
+
+})
+
+
+### Convenience function, changed 24/11/2008.
+### Note 1: var -> sd. "variance" now rather serves as 'topic name'.
+### Note 2: Bootstrap/Jackknife-Variance.
+### Note 3: Variance assessement only of 'qualitative nature'. No genuine
+### 'estimators' of variance, since replications are far away from i.i.d.
+### renamed from 'variance' to 'dispersion', since ranks are fixed, only
+### estimators are variant.
+### NOTE: 'iqr' does not need a 'center'.
+
+setGeneric("dispersion", function(RR, measure = c("sd", "mad", "iqr"), scheme = c("original", "symmetric", "user"), center = NULL)
+            standardGeneric("dispersion"))
+
+setMethod("dispersion", signature("RepeatedRanking"),
+           function(RR, measure = c("sd", "mad", "iqr"), scheme = c("original", "symmetric", "user"), center = NULL){
+           
+            scheme <- match.arg(scheme)
+            if(!is.element(scheme, c("original", "symmetric", "user")))
+            stop("'scheme' must be one of 'original', 'symmetric' or 'user' \n")
+           
+            if(scheme == "user" & is.null(center))
+            warning("'scheme' = 'user', but 'center' is not specified \n")
+           
+            if(scheme != "user" & !is.null(center))
+            warning("'center' ignored \n")
+
+            measure <- match.arg(measure)
+            if(!is.element(measure, c("sd", "mad", "iqr")))
+            stop("Invalid 'measure' specified \n")
+            
+            ###  'iqr' is scheme-independent
+            if(measure == "iqr"){
+             ranking <- RR@rankings
+             iqrs <- apply(ranking, 1, IQR)
+             # names(iqrs) <- paste("gene", 1:nrow(ranking))
+             # return(iqrs)
             }
-            if(estimator == "mad"){
-             if(center == "perturbed")
-              mads <- ((apply(ranking, 1, mad, constant = 1))^2)[ord]
+            ###
+           
+           if(scheme == "original"){
+            r0 <- RR@original@ranking
+            ranking <- RR@rankings
+            if(ncol(ranking) < 2) stop("Too few replications in the argument 'RR'; variance cannot be estimated \n")
+            if(measure == "sd"){
+              sds <- sqrt(1/(ncol(ranking)-1)*rowSums((ranking - r0)^2))
+              return(sds)
+            }
+            else{
+               mads <- apply(abs(ranking - r0), 1, median)
+               return(mads)
+            }
+           }
+           
+           if(scheme == "symmetric"){
+              R <- cbind(RR@original@ranking, RR@rankings)
+              if(measure == "sd"){
+                sds <- apply(R, 1, sd)
+                return(sds)
+              }
              else{
-              mads <- ((apply(abs(ranking - r0), 1, median))^2)[ord]
-             }
-             names(mads) <- paste("top gene", 1:nrow(ranking)) 
-             return(mads)
-          }
+                ### constant not necessary above, ok.
+                mads <- apply(R, 1, mad, constant = 1)
+                return(mads)
+              }
+            }
+            
+            if(scheme == "user"){
+
+             R <- cbind(RR@original@ranking, RR@rankings)
+             if(nrow(R) != length(center))
+             stop("Length of 'center' and number of genes disagree \n")
+             if(any(center < 0) || any(center > nrow(R)))
+             warning("Entries of 'center' negative or larger than the number of genes; verify correctness of 'center' \n")
+             
+             if(measure == "sd"){
+                 sds <- sqrt(1/(ncol(R)-1)*rowSums((R - center)^2))
+                 return(sds)
+              }
+             else{
+                mads <- apply(abs(R - center), 1, median)
+               return(mads)
+              }
+            }
           })
 
           
-#+++++++++++ Class: StabilityLm +++++++++++++++++++++++++++++++++++++++++++++++#
+#+++++++++++ Class: StabilityDistance +++++++++++++++++++++++++++++++++++++++++++++++#
+### created 29/11/2008. Replaces StabilityLm.
 
-setClass(Class="StabilityLm",
-        representation(coefficients="numeric", R2vec="numeric",
-                       multivariateR2 = "numeric", residuals = "numeric",
-                       residuals.unscaled = "numeric", weightscheme = "list"))
+setClass(Class="StabilityDistance",
+        representation(scores ="numeric", noinformation = "numeric", scheme = "character", measure = "character", decay = "character"))
                        
-setMethod("show", signature="StabilityLm", function(object){
-          wl <- object@weightscheme
-          if(wl$scheme == "pval") scheme <- "based on p-values"
-          else scheme <- "based on ranks"
-          decay <- switch(wl$decay, linear="linear weight decay",
-                                    quadratic="quadratic weight decay",
-                          exponential=paste("exponential weight decay, alpha=", wl$alpha))
+setMethod("show", signature="StabilityDistance", function(object){
+          decay <- switch(object@decay, linear = "linear weight decay",
+                                    quadratic = "quadratic weight decay",
+                                    exponential = "exponential weight decay")
+          measure <- switch(object@measure, l1 = "absolute distance",
+                                      l2 = "squared distance",
+                                      spearman = "spearman's rank correlation",
+                                      kendall = "kendall's tau")
           
-          cat("Stability measure: weighted linear regression, \n",
-               "weighting: ", scheme, ", ", decay, "\n",
-               "multivariate R2 is: ", object@multivariateR2, "\n") 
+          cat("Stability measure: ", measure,",\n",
+               "scheme: ", object@scheme,",\n",
+               "weighting: " , decay ,".\n", sep="")
           })
           
-setMethod("plot", signature("StabilityLm", "missing"), 
-           function(x, frac=1/50, scaled = TRUE, standardize=TRUE,...){
-          dotsCall <- substitute(list(...))
-          ll <- eval(dotsCall)
-          if(!hasArg(xlab)) ll$xlab <- "Ranks of the orginal dataset"
-          if(!hasArg(ylab)) ll$ylab <- "Multivariate Regression residual"
-          if(!hasArg(cex))  ll$cex <- 0.8
-          if(!hasArg(pch)) ll$pch <- "o"
-          if(!hasArg(main)) ll$main <- ""
-          ngenes <- ceiling(length(x@residuals)*frac)
-          ll$x <- 1:ngenes
-          if(scaled) ll$y <- x@residuals[1:ngenes]
-          else ll$y <- x@residuals.unscaled[1:ngenes]
-          if(standardize) ll$y <- scale(ll$y)
-          do.call(plot, args=ll)
+setMethod("summary", signature="StabilityDistance", function(object, display = c("summary", "all"), digits = 3){
+           display <- match.arg(display)
+           scores <- object@scores
+           scheme <- object@scheme
+           if(scheme == "original"){
+             if(display == "summary"){
+               cat("summary of stability scores (with respect to reference data set): \n")
+              print(summary(scores, digits = digits))
+              cat("expected score in the case of no-information: ", object@noinformation, "\n")
+              }
+             else{
+               cat("stability scores (with respect to reference data set): \n")
+               print(round(scores, digits = digits))
+               cat("expected score in the case of no-information: ", object@noinformation, "\n")
+             }
+           }
+           else{
+              if(display == "summary"){
+               cat("summary of pairwise stability scores: \n")
+               print(summary(scores, digits = digits))
+               cat("expected score in the case of no-information: ", object@noinformation, "\n")
+              }
+              else{
+                 ### determine number of lists from number of pairs
+                 norankings <- 0.5 + sqrt(0.25 + 2*length(scores))
+                 scoremat <- matrix(0, nrow = norankings, ncol = norankings)
+                 rownames(scoremat) <- colnames(scoremat) <- paste("list", 1:norankings, sep="")
+                 diag(scoremat) <- 1
+                 k <- 1
+                  for(i in 1:norankings){
+                    j <- i+1
+                    while(j <= norankings){
+                    scoremat[i,j] <- scoremat[j,i] <- scores[k]
+                    j <- j+1                       
+                    k <- k+1
+                   }
+                  }  
+                cat("matrix of pairwise stability scores: \n")
+                print(round(scoremat, digits = digits))
+                cat("expected score in the case of no-information: ", object@noinformation, "\n")
+              }
+             }
           })
-          
+
 #+++++++++++ Class: StabilityOverlap +++++++++++++++++++++++++++++++++++++++++++++++#
 
 setClass(Class="StabilityOverlap",
-        representation(overlap = "matrix", scores ="matrix", weightscheme = "list"))
+        representation(intersection = "matrix", overlapscore = "matrix",
+                       noinformation = "list", scheme = "character", decay = "character"))
         
 setMethod("show", signature="StabilityOverlap", function(object){
-          wl <- object@weightscheme
-          if(wl$scheme == "pval") scheme <- "based on p-values"
-          else scheme <- "based on ranks"
-          decay <- switch(wl$decay, linear="linear weight decay",
-                                    quadratic="quadratic weight decay",
-                          exponential=paste("exponential weight decay, alpha=", wl$alpha))
-          p <- nrow(object@scores)
-          cat("Stability measure: Overlap Score, \n",
-               "weighting: ", scheme, ", ", decay, "\n",
-               "mean Overlap Score is: ", mean(object@scores[p,]), "\n") 
-          })
+            decay <- switch(object@decay, linear = "linear weight decay",
+                                          quadratic = "quadratic weight decay",
+                                          exponential = "exponential weight decay")
+
+            #measure <- switch(object@measure,  intersection = "intersection",
+            #                                   union  = "union",
+            #                                   overlap_score = "overlap score")
+
+            cat("Stability measure: intersection count and overlap score,\n",
+                 "scheme: ", object@scheme, ", \n",
+                 "weighting: ", decay, ".\n", sep="")
+         })
           
 ### for generic method definition, s. above
           
-setMethod("summary", signature="StabilityOverlap", 
-          function(object, which=c("scores", "overlap"), position=100,...){
-          which <- match.arg(which)
-          if(!is.element(which, c("scores", "overlap")))
-          stop("'which' must be either 'scores' or 'overlap' \n") 
-          position <- min(position, nrow(object@scores))
-          if(which == "scores"){
-            cat("summary of scores, iterationwise, up to rank", position,  ": \n \n")
-            summary(object@scores[position,])
-            }
-          else {
-           cat("summary of overlaps, iterationwise, up to rank", position, ": \n \n")
-            summary(object@overlap[position,])
+
+setMethod("summary", signature="StabilityOverlap", function(object, measure = c("overlapscore", "intersection"), display = c("summary", "all"), position, digits = 3){
+           measure <- match.arg(measure)
+           display <- match.arg(display)                                                                                                                                                        
+           if(!is.element(measure, c("overlapscore", "intersection")))
+           stop("'measure' must be either 'overlapscore' or 'intersection' \n")
+           p <- nrow(object@overlapscore)
+           if(missing(position)) position <- p
+           if(position < 1) stop("'position' must be greater than one \n")
+           if(position > p) stop("'position' exceeds the lengths of the lists \n")
+           overlapscore <- object@overlapscore[position,]
+           intersection <- object@intersection[position,]
+           scheme <- object@scheme
+           if(scheme == "original"){
+             if(display == "summary"){
+               if(measure == "overlapscore"){
+               cat("summary of overlap scores (with respect to reference data set): \n")                              
+               print(summary(overlapscore, digits = digits))
+               cat("expected score in the case of no-information: ", object@noinformation$overlapscore[position], "\n")
+               }
+               else{
+                  cat("summary of intersection counts (with respect to reference data set): \n")
+                  print(summary(intersection, digits = digits))
+                  cat("expected score in the case of no-information: ", object@noinformation$intersection[position], "\n")
+                }
+              }
+             else{
+               if(measure == "overlapscore"){
+               cat("overlap scores (with respect to reference data set): \n")
+               print(round(overlapscore, digits = digits))
+               cat("expected score in the case of no-information: ", object@noinformation$overlapscore[position], "\n")
+              }
+              else{
+               cat("intersection fractions (with respect to reference data set): \n")
+               print(round(intersection, digits = digits))
+               cat("expected score in the case of no-information: ", object@noinformation$intersection[position], "\n")
+              }
+            }      
            }
-           })
-          
+           else{
+              if(display == "summary"){
+               if(measure == "overlapscore"){
+               cat("summary of pairwise overlap scores: \n")
+               print(summary(overlapscore, digits = digits))
+               cat("expected score in the case of no-information: ", object@noinformation$overlapscore[position], "\n")
+               }
+               else{
+               cat("summary of pairwise intersection fractions: \n")
+               print(summary(intersection, digits = digits))
+               cat("expected score in the case of no-information: ", object@noinformation$intersection[position], "\n")
+               }
+              }
+              else{
+                 ### determine number of lists from number of pairs.
+                 ### NOTE: overlapscore is a vector (s. extraction above).
+                 norankings <- as.integer(0.5 + sqrt(0.25 + 2*length(overlapscore)))
+                 scoremat <- matrix(0, nrow = norankings, ncol = norankings)
+                 rownames(scoremat) <- colnames(scoremat) <- paste("list", 1:norankings, sep="")
+                 diag(scoremat) <- 1
+                 k <- 1
+                 if(measure == "overlapscore"){
+                  for(i in 1:norankings){
+                    j <- i+1
+                    while(j <= norankings){
+                    scoremat[i,j] <- scoremat[j,i] <- overlapscore[k]
+                    j <- j+1                       
+                    k <- k+1
+                   }
+                  }  
+                cat("matrix of pairwise overlap scores: \n")
+                print(round(scoremat, digits = digits))
+                cat("expected score in the case of no-information: ", object@noinformation$overlapscore[position], "\n")
+                }
+                else{
+                  for(i in 1:norankings){
+                    j <- i+1
+                   while(j <= norankings){
+                    scoremat[i,j] <- scoremat[j,i] <- intersection[k]
+                    j <- j+1                     
+                    k <- k+1
+                    }
+                   }  
+                  cat("matrix of pairwise intersection fractions: \n")
+                  print(round(scoremat, digits = digits))
+                  cat("expected score in the case of no-information: ", object@noinformation$intersection[position], "\n")
+                }
+              }
+             }
+          })
+
+####
 setMethod("plot", signature("StabilityOverlap", "missing"), 
+           function(x, frac=1/50, mode = c("mean", "all", "specific"), which = 1, ...){
+          dotsCall <- substitute(list(...))
+         mode <- match.arg(mode)                                                                              
+          ### use recursion
+          if(mode == "all"){
+            ask <- ((prod(par("mfcol"))) == 1 && dev.interactive())
+            opar <- par(ask=ask)
+
+            for(i in 1:ncol(x@overlapscore))
+              plot(x, mode = "specific", which = i)
+              on.exit(par(opar))                     
+          }
+          ll <- eval(dotsCall)
+          ll$xlab <- "list position"
+          ll$ylab <- "overlap"
+          ll$lwd <- 1.2
+          if(mode == "mean")
+          ll$main <- "percentage of  overlap"
+          if(mode == "specific")
+          ll$main <- paste("percentage of overlap, which", which, sep = "=")
+          ll$type <- "l"
+          ll$col <- "grey"
+          ngenes <- ceiling(nrow(x@overlapscore)*frac)
+          ll$x <- 1:ngenes
+          if(mode == "mean")
+            ll$y <- apply(x@intersection[1:ngenes, , drop=FALSE], 1, mean)
+          if(mode == "specific")
+            ll$y <- x@intersection[1:ngenes, which]
+          ll$ylim <- c(0, 1)  ### changed
+          layout(mat=as.matrix(c(1,2)), heights=c(1,1))
+          do.call("plot", args=ll)
+          abline(h = 1, lwd=2.5)
+          ll$col <- "red"
+          ## ll$lty <- "dashed"
+          ll$lwd <- 1.2
+          ll$type <- "l"
+          if(mode == "mean")
+            ll$y <- apply(x@overlapscore[1:ngenes, , drop=FALSE], 1, mean)
+          if(mode == "specific")
+            ll$y <- x@overlapscore[1:ngenes, which]
+          ll$ylim <- c(0,1)
+          ll$ylab <- "score"
+          if(mode == "mean")
+            ll$main <- "average overlap score"
+          else
+            ll$main <- paste("overlap score, which", which, sep = "=")
+          do.call("plot", args=ll)
+          abline(h = 1, lwd = 2.5)                                                                             
+          layout(mat=as.matrix(1))                                                                                
+           }
+          )
+          
+          
+####
+
+setClass(Class="StabilityUnion",
+        representation(union = "numeric", unionscore = "numeric", noinformation = "list", decay = "character"))
+
+setMethod("show", signature="StabilityUnion", function(object){
+            cat("Stability measure: union count, \n", sep="")
+            cat("weighting: " , object@decay , ". \n", sep ="")
+         })
+         
+### plot-method
+
+
+setMethod("plot", signature("StabilityUnion", "missing"),
            function(x, frac=1/50, ...){
           dotsCall <- substitute(list(...))
           ll <- eval(dotsCall)
-          ll$xlab <- "Rank"
-          ll$ylab <- "Overlap"
+          ll$xlab <- "list position"
+          ll$ylab <- "union"
           ll$lwd <- 1.2
-          ll$main <- "Mean Overlap"
-          ll$type <- "h"
+          ll$main <- paste("union")
+          ll$type <- "l"
           ll$col <- "grey"
-          ngenes <- ceiling(nrow(x@scores)*frac)
+          ngenes <- ceiling(length(x@unionscore)*frac)
           ll$x <- 1:ngenes
-          ll$y <- apply(x@overlap[1:ngenes, , drop=FALSE], 1, mean)
-          ll$ylim <- c(0, ngenes)
+          ll$y <- x@union[1:ngenes]
+          ll$ylim <- c(0, 1)
           layout(mat=as.matrix(c(1,2)), heights=c(1,1))
-          do.call(plot, args=ll)
-          abline(0,1, lwd=2.5)
+          do.call("plot", args=ll)
+          abline(h = 1, lwd = 2.5)                             
+          if(length(x@noinformation) != 0){
+            ll$lty <- "dashed"
+            ll$y <- x@noinformation$union[1:ngenes]
+            do.call("lines", args = ll)
+          }
+          #abline(0,1, lwd=2.5)
           ll$col <- "red"
-          ll$lty <- "dashed"
           ll$lwd <- 1.2
           ll$type <- "l"
-          ll$y <- apply(x@scores[1:ngenes, , drop=FALSE], 1, mean)
+          ll$y <- x@unionscore[1:ngenes]
           ll$ylim <- c(0,1)
+          ll$lty <- 1                             
           ll$ylab <- "score"
-          ll$main <- "Mean Score"
-          do.call(plot, args=ll)
+          ll$main <- "union score"
+          do.call("plot", args=ll)
+          abline(h = 1, lwd = 2.5)                             
+          if(length(x@noinformation) != 0){
+            ll$y <- x@noinformation$unionscore[1:ngenes]
+            ll$lty <- "dashed"                               
+            do.call("lines", args = ll)
+          }
+
           layout(mat=as.matrix(1))
            }
           )
+
+
           
          
 #+++++++++++ Class: AggregatedRanking +++++++++++++++++++++++++++++++++++++++++#
 
+### major revision 18/11/2008.
+### type: "which aggregation method" (simple, MC, PCA, ...)
+### measure: "Was war Grundlage der Aggregation (entsprich Psi_j in den Definitionen)"
+### method: Welche Methode wurde aggregiert (nicht immer sinnvoll).
+
 setClass(Class="AggregatedRanking",
-        representation(posterior = "vector", summary = "numeric", pval = "vector", type= "character",
-                       fun="character", method = "character"))
+        representation(ranking = "numeric", type= "character", measure = "character", method = "character"))
         
            
 setMethod("show", signature="AggregatedRanking", function(object){
-            cat(object@type, " aggregation for ", length(object@summary), "genes \n")
-            cat("aggregation statistic: ",  object@fun, "\n")
+            cat(object@type, " aggregation for ", length(object@ranking), "genes, \n", sep="")
+            cat("aggregation measure: ",  object@measure, ".\n", sep="")
             })
-            
-setMethod("plot", signature("AggregatedRanking", "missing"), 
-           function(x, index, ...){
-          if(x@type == "simple") 
-           stop("Plot only possible for bayesian aggregation \n")
-          post <- x@posterior[[index]] 
-          dotsCall <- substitute(list(...))
-          ll <- eval(dotsCall)
-          ll$x <- as.numeric(names(post))
-          ll$y <- post
-          if(!hasArg(lwd)) ll$lwd <- 1.5
-          if(!hasArg(main)) ll$main <- paste("posterior distribution for gene index ", 
-                                            substitute(index))
-          ll$type <- "h"
-          if(!hasArg(ylab)) ll$ylab <- "posterior probability"
-          if(!hasArg(xlab)) ll$xlab <- "rank"
-          do.call(plot, args=ll)
-           }
-          )
-          
-#+++++++++++ Class: CombinedRanking +++++++++++++++++++++++++++++++++++++++++#
 
-setClass(Class="CombinedRanking",
-        representation(ranking = "numeric", rankmatrix = "matrix", inout = "matrix", 
+setMethod("toplist", signature(object="AggregatedRanking"), function(object, top=10, show = TRUE){
+          ind <- match(1:top, object@ranking)
+          ret <- data.frame(index=ind)
+          rownames(ret) <- NULL
+          if(show) print(ret)
+          invisible(ret)
+          })
+
+
+#+++++++++++ Class: GeneSelectorOutput +++++++++++++++++++++++++++++++++++++++++#
+### Result after running GeneSelector.
+### class renamed 17/12/2008.
+
+setClass(Class="GeneSelectorOutput",
+        representation(final = "numeric", rankings = "matrix", inout = "matrix", 
                        selected = "numeric", adjpval="vector",  maxrank = "numeric", 
-                       statistics = "character", absdist = "numeric", reldist = "numeric"))
+                       statistics = "character"))
         
            
-setMethod("show", signature="CombinedRanking", function(object){
+setMethod("show", signature="GeneSelectorOutput", function(object){
             cat("GeneSelector run with gene rankings from the following statistics: \n")
             for(i in 1:length(object@statistics)) cat(object@statistics[i], "\n")
             cat("Number of genes below threshold rank ", 
                  object@maxrank, " in all statistics:", 
-                 length(object@selected), "\n")})
+                 sum(object@selected), "\n", sep="")})
                  
-setMethod("toplist", signature=(object="CombinedRanking"), function(object, show = TRUE, top=10){
-          ind <- object@ranking[1:top]
-          ret <- data.frame(index=ind, pvals=object@adjpval[1:top])
-          rownames(ret) <- NULL
+setMethod("toplist", signature=(object="GeneSelectorOutput"), function(object, top=10, show = TRUE){
+          ind <- match(1:top, object@final)
+          ret <- data.frame(index=ind, pvals=object@adjpval[ind])
+           rownames(ret) <- NULL
           if(show) print(ret)
           invisible(ret)
           })
           
 setGeneric("SelectedGenes", function(object) standardGeneric("SelectedGenes"))
 
-setMethod("SelectedGenes", signature(object="CombinedRanking"), function(object){
-          toplist(object, length(object@selected)) })
+setMethod("SelectedGenes", signature(object="GeneSelectorOutput"), function(object){
+          toplist(object, sum(object@selected)) })
           
-          
-setMethod("plot", signature("CombinedRanking", "missing"), 
-           function(x, top=10, ...){
-          dotsCall <- substitute(list(...))
-          ll <- eval(dotsCall)
-          ll$height <- x@reldist[1:top]
-          deltay <- max(ll$height)/top
-          ll$horiz <- FALSE
-          if(!hasArg(main)) ll$main <- paste("GeneSelector relative distance plot")
-          if(!hasArg(ylab)) ll$ylab <- "relative distance"
-          if(!hasArg(xlab)) ll$xlab <- "gene index"
-          if(!hasArg(cex.lab)) ll$cex.lab <- 1.5
-          if(!hasArg(ylim)) ll$ylim <- c(0, max(ll$height)+deltay*2)
-          bb <- do.call(barplot, args=ll)
-          chars <- as.character(x@ranking[1:top])
-          for(i in 1:top) 
-          characterplot(chars[i], bb[i], ll$height[i], deltax=3/top, deltay=deltay, cex=15/top)} 
-          )
 
-
-setGeneric("GeneInfoScreen", function(object, which) standardGeneric("GeneInfoScreen"))          
-
-setMethod("GeneInfoScreen", signature(object="CombinedRanking"), 
-          function(object, which){
+setMethod("plot", signature("GeneSelectorOutput", "missing"),
+          function(x, which){
           if(length(which) != 1) stop("Length of 'which' must be one. \n")
-          stats <- rev(object@statistics)
+          stats <- rev(x@statistics)
           nostats <- length(stats)
-          inout <- rev(object@inout[which,])
-          RR <- rev(object@rankmatrix[which,])
-          p <- nrow(object@rankmatrix)
+          inout <- rev(x@inout[which,])
+          RR <- rev(x@rankings[which,])
+          p <- nrow(x@rankings)
           p0 <- c(0.01, 0.05, 0.1, 0.25, 1)
           defbreaks <- ceiling(p0*p)
           plot(0:1, 0:1, axes=FALSE, type="n", 
@@ -518,9 +800,9 @@ setMethod("GeneInfoScreen", signature(object="CombinedRanking"),
           cols <- terrain.colors(5)
           for(i in 1:nostats){
           rect(0, partition[i], 0.25, partition[i+1])
-          points(0.125, (partition[i] + partition[i+1])/2, cex=1.7, pch=inout)
+          points(0.125, (partition[i] + partition[i+1])/2, cex=1.7, pch=inout[i])
           text(0.15, 1, "selected ?", cex=1)
-          text(0.5, 1,  "statistic", cex=1)
+          text(0.5, 1,  "criterion", cex=1)    ### statistic -> criterion.
           text(0.8, 1, "rank", cex=1)
           text(0.5, (partition[i] + partition[i+1])/2, stats[i], cex=1.5)
           text(0.8, (partition[i] + partition[i+1])/2, round(RR[i]), cex=1.5,
@@ -531,60 +813,6 @@ setMethod("GeneInfoScreen", signature(object="CombinedRanking"),
           }})
           
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-
-#+++++++++++ Class: StabilityPCA +++++++++++++++++++++++++++++++++++++++++++++++#
-
-setClass(Class="StabilityPCA",
-        representation(eigenvalues = "numeric", measure = "numeric"))
-                       
-setMethod("show", signature="StabilityPCA", function(object){
-          cat("Stability measure: Eigenvalue ratio from Principal Components Analysis, \n",
-               "eigenvalue ratio for largest eigenvalue is: ", object@measure, "\n") 
-          })
-          
-          
-#+++++++++++ Class: StabilityGLM +++++++++++++++++++++++++++++++++++++++++++++++#
-
-setClass(Class="StabilityGLM",
-        representation(coefficients="numeric", deviancevec="numeric",
-                       deviancecount = "numeric", weightscheme = "list"))
-
-setMethod("show", signature="StabilityGLM", function(object){
-          wl <- object@weightscheme
-          if(wl$scheme == "pval") scheme <- "based on p-values"
-          else scheme <- "based on ranks"
-          decay <- switch(wl$decay, linear="linear weight decay",
-                                    quadratic="quadratic weight decay",
-                          exponential=paste("exponential weight decay, alpha=", wl$alpha))
-
-          cat("Stability measure: weighted binary logistic regression, \n",
-               "weighting: ", scheme, ", ", decay, "\n",
-               "deviance criterion is: ", object@deviancecount, "\n")
-          })
-          
-#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-
-#+++++++++++ Class: PCAMethodsResult ++++++++++++++++++++++++++++++++++++++++++#
-
-setClass(Class="PCAMethodsResult",
-        representation(summary = "numeric", eigenvalues = "numeric", methods = "character"))
-
-
-setMethod("show", signature="PCAMethodsResult", function(object){
-            cat("Aggregation by the first principcal component based on \n ranks for the following methods: \n")
-            for(i in 1:length(object@methods)) cat(object@methods[i], "\n")
-            cat("variation explained by the first principal component: \n")
-            cat(round(object@eigenvalues[1]/sum(object@eigenvalues), 3), "\n")
-            })
-          
-
-          
-            
-         
-
-          
-
-          
 
 
           

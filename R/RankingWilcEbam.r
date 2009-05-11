@@ -46,8 +46,8 @@ setMethod("RankingWilcEbam", signature(x="matrix", y="numeric"),
           if(type == "unpaired"){
           if(nlevels(y) != 2)
           stop("Type has been chosen 'unpaired', but y has not exactly two levels ! \n")
-           ll$cl <- as.numeric(y)
-           out <- do.call(wilc.ebam, ll)
+           ll$cl <- as.numeric(y)-1
+           out <- do.call("wilc.ebam", ll)
           }
           if(type == "paired"){
            tab <- table(y)
@@ -56,14 +56,14 @@ setMethod("RankingWilcEbam", signature(x="matrix", y="numeric"),
            if(tab[1] != tab[2] || length(unique(y[1:tab[1]])) != 1 | length(unique(y[-c(1:tab[1])])) != 1)
            stop("Incorrect coding for type='paired'. \n")
            ll$cl <- c(-(1:tab[1]),(1:tab[1]))
-           out <- do.call(wilc.ebam, ll)
+           out <- do.call("wilc.ebam", ll)
           }
 
           if(type == "onesample"){
           if(length(unique(y)) != 1)
           warning("Type has been chosen 'onesample', but y has more than one level. \n")
           ll$cl <- rep(1, length(y))
-          out <- do.call(wilc.ebam, ll)
+          out <- do.call("wilc.ebam", ll)
           }
 
           check.out <- siggenes:::checkFUNout(out)
@@ -78,7 +78,7 @@ setMethod("RankingWilcEbam", signature(x="matrix", y="numeric"),
         posterior <- 1 - p0 * out$ratio
         posterior[posterior < 0] <- 0
         statistic <- posterior
-        ranking <- order(posterior, decreasing=TRUE)
+        ranking <- rank(-posterior, ties.method = "first")
         pvals <- rep(NA, length(posterior))
           if(!is.null(gene.names))
           names(pvals) <- names(statistic) <- gene.names
@@ -86,8 +86,8 @@ setMethod("RankingWilcEbam", signature(x="matrix", y="numeric"),
           if(!is.null(rownames(x)))
           names(pvals) <- names(statistic) <- rownames(x)
           }
-          new("GeneRanking", x=x, y=as.factor(y), statistic=statistic[ranking],
-          ranking=ranking, pval=pvals[ranking], type=type, method="WilcEbam")
+          new("GeneRanking", x=x, y=as.factor(y), statistic=statistic,
+          ranking=ranking, pval=pvals, type=type, method="WilcEbam")
 }
 )
 

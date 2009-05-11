@@ -10,7 +10,7 @@
   The gene expressions were drawn from a multivariate
   normal distribution of dimension 2000 with mean
   vector zero and an unstructured simulated covariance
-  matrix drawn from an Inverse Wishart distribution.\cr
+  matrix drawn from an inverse Wishart distribution.\cr
   The first 40 genes are differentially expressed,
   the differences in the mean for the first class 
   were drawn from a normal distribution.

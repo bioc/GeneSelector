@@ -12,9 +12,11 @@
 
 \item{object = "GeneRanking"}{s. \link{GeneRanking-class}}
 
-\item{object = "RepeatRanking"}{s. \link{GeneRanking-class}}
+\item{object = "RepeatedRanking"}{s. \link{RepeatedRanking-class}}
 
-\item{object = "CombinedRanking"}{s. \link{CombinedRanking-class}}
+\item{object = "AggregatedRanking"}{s. \link{AggregatedRanking-class}}
+
+\item{object = "GeneSelectorOutput"}{s. \link{GeneSelectorOutput-class}}
 }}
 
 \keyword{univar}

@@ -1,5 +1,5 @@
-### filename: AggregateSimple.r
-### Title: Aggregation using simple statistics.
+### filename: AggregatePenalty.r
+### Title: Aggregation with a variance penalty.
 ### Author: Martin Slawski
 ### email: <Martin.Slawski@campus.lmu.de>
 ### date of creation: 31.8.2007
@@ -18,44 +18,32 @@
 #
 ###**************************************************************************###
 
-################################################################################
-
-setClass(Class="GeneRanking",
-        representation(x="matrix", y="factor", statistic="numeric", ranking="numeric",
-                        pval="vector", type="character", method="character"))
-
-setClass(Class="RepeatRanking",
-        representation(original="GeneRanking", rankings="matrix", pvals="matrix",
-                       statistics = "matrix", scheme="character"))
-
-################################################################################
-
-
-setGeneric("AggregatePenalty", function(RR, lambda = NULL, k=5, theta = 50,
-            estimator = c("var", "mad", "iqr", "residuals"), ...)
+setGeneric("AggregatePenalty", function(RR, dispersion = c("sd", "mad", "iqr"), center = NULL, gamma = 0.05, ...)
             standardGeneric("AggregatePenalty"))
 
 
-setMethod("AggregatePenalty", signature(RR="RepeatRanking"),
-            function(RR,  lambda = NULL, k=5, theta = 50,
-                     estimator = c("var", "mad", "iqr", "residuals"), ...) {
-if(!is.null(lambda) && lambda < 0) stop("'lambda' must be strictly greater than 0 \n")
-if(is.null(lambda)) lambda <- (k-1)/(theta - 1)
-if(lambda < 0 || !is.finite(lambda)) stop("Invalid values specified for 'k' or 'theta' \n")
-r0 <- RR@original@ranking
-ranking <- RR@rankings
-ord0 <- match(1:nrow(ranking), r0)
-estimator <- match.arg(estimator)
-if(is.element(estimator, c("var", "mad", "iqr")))
-varhat <- GeneSelector:::variance(RR, estimator,...)
-else{
-  stab <- GetStabilityLm(RR, ...)
-  varhat <- stab@residuals.unscaled
-}
-agg <- ((1:nrow(ranking))*(1+lambda*varhat))[ord0]
-names(agg) <- NULL
-new("AggregatedRanking", posterior=NA, summary=agg, pval=RR@original@pval,
-     type="penalty", fun=estimator, method = RR@original@method)
+setMethod("AggregatePenalty", signature(RR = "RepeatedRanking"),
+            function(RR, dispersion = c("sd", "mad", "iqr"), center = NULL, gamma = 0.05) {
+
+if(is.null(center)) center <- RR@original@ranking
+p <- length(RR@original@ranking)                                                                                           
+if(p != length(center))
+stop("Length of 'center' and number of genes disagree \n")
+if(any(center < 0) || any(center > p))
+warning("Entries of 'center' negative or larger than the number of genes; verify correctness of 'center' \n")
+
+dispersion <- match.arg(dispersion)
+if(!is.element(dispersion, c("sd", "mad", "iqr")))
+stop("Invalid choice for 'dispersion' \n")
+
+if(gamma < 0 || gamma > 1)
+stop("'gamma' may range from 0 to 1 \n")
+
+sigmahat <- dispersion(RR = RR, measure = dispersion, scheme = "user", center = center)
+
+
+new("AggregatedRanking", ranking = rank((1-gamma)*center + gamma*sigmahat), type= "penalty",
+    measure = "goodness-stability score",  method = RR@original@method)
  }
 )
 

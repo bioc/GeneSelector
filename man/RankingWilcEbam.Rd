@@ -1,12 +1,15 @@
 \name{RankingWilcEbam}
 \alias{RankingWilcEbam}
+\alias{RankingWilcEbam-methods}
+\alias{RankingWilcEbam,matrix,numeric-method}
+\alias{RankingWilcEbam,matrix,factor-method}
+\alias{RankingWilcEbam,ExpressionSet,character-method}
 \title{Ranking based on the empirical bayes approach of Efron}
 \description{
   The function is a wrapper for the function \code{wilc.ebam}
   from the package \code{siggenes} that implements an
   empirical bayes mixture model approach in combination
-  with the Wilcoxon statistic.\cr
-   For \code{S4} method information, see \link{RankingWilcEbam-methods}.
+  with the Wilcoxon statistic.
 }
 \usage{
 RankingWilcEbam(x, y, type = c("unpaired", "paired", "onesample"), gene.names = NULL, ...)
@@ -57,14 +60,14 @@ RankingWilcEbam(x, y, type = c("unpaired", "paired", "onesample"), gene.names = 
              \emph{Techical Report, University of Dortmund.}
              }
 
-\author{Martin Slawski \email{martin.slawski@campus.lmu.de} \cr
-        Anne-Laure Boulesteix \url{http://www.slcmsr.net/boulesteix}}
+\author{Martin Slawski \cr
+        Anne-Laure Boulesteix}
 \seealso{
-         \link{GetRepeatRanking}, \link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
+         \link{RepeatRanking}, \link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
           \link{RankingBaldiLong}, \link{RankingFoxDimmic}, \link{RankingLimma}, 
           \link{RankingEbam},  \link{RankingSam}, 
           \link{RankingBstat}, \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
-          \link{RankingPermutation}, \link{RankingGap}}
+          \link{RankingPermutation}}
 \keyword{univar}
 \examples{
 ### Load toy gene expression data

@@ -1,12 +1,15 @@
 \name{RankingWilcoxon}
 \alias{RankingWilcoxon}
+\alias{RankingWilcoxon-methods}
+\alias{RankingWilcoxon,matrix,numeric-method}
+\alias{RankingWilcoxon,matrix,factor-method}
+\alias{RankingWilcoxon,ExpressionSet,character-method}
 \title{Ranking based on the Wilcoxon statistic}
 \description{
   The Wilcoxon statistic is rank-based and 'distribution free'. 
-It is equivalent to the Mann-Whitney statistic and also related to the 'Area under
+It is equivalent to the Mann-Whitney statistic and also related to the 'area under
   the curve' (AUC) in the two sample case. The implementation
-  is efficient, but still far slower than that of the t-statistic.\cr
-  For \code{S4} method information, see \link{RankingWilcoxon-methods}.  
+  is efficient, but still far slower than that of the t-statistic.
 }
 \usage{
 RankingWilcoxon(x, y, type = c("unpaired", "paired", "onesample"), pvalues = FALSE, gene.names = NULL, ...)
@@ -15,7 +18,7 @@ RankingWilcoxon(x, y, type = c("unpaired", "paired", "onesample"), pvalues = FAL
 \arguments{
   \item{x}{A \code{matrix} of gene expression values with rows
            corresponding to genes and columns corresponding to observations or alternatively an object of class \code{ExpressionSet}.\cr
-           If \code{type = paired}, the first half of the columns corresponds to 
+           If \code{type = "paired"}, the first half of the columns corresponds to
            the first measurements and the second half to the second ones. 
            For instance, if there are 10 observations, each measured twice,
            stored in an expression matrix \code{expr}, 
@@ -26,7 +29,7 @@ RankingWilcoxon(x, y, type = c("unpaired", "paired", "onesample"), pvalues = FAL
            If \code{x} is an \code{ExpressionSet}, then \code{y}
            is a character specifying the phenotype variable in
            the output from \code{pData}.\cr
-           If \code{type = paired}, take care that the coding is
+           If \code{type = "paired"}, take care that the coding is
            analogously to the requirement concerning \code{x}}
   \item{type}{\describe{
                 \item{"unpaired":}{two-sample test, Wilcoxon Rank Sum test
@@ -44,19 +47,16 @@ RankingWilcoxon(x, y, type = c("unpaired", "paired", "onesample"), pvalues = FAL
   \item{\dots}{Currently unused argument.}
 }
 
-\note{Note that although the Wilcoxon Rank Sum test is distribution-free,
-      it is not without assumptions.}
-
 \value{An object of class \link{GeneRanking}.}
 
-\author{Martin Slawski \email{martin.slawski@campus.lmu.de} \cr
-        Anne-Laure Boulesteix \url{http://www.slcmsr.net/boulesteix}}
+\author{Martin Slawski \cr
+        Anne-Laure Boulesteix}
 \seealso{
-         \link{GetRepeatRanking}, \link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT}, 
+         \link{RepeatRanking}, \link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT},
           \link{RankingBaldiLong}, \link{RankingFoxDimmic}, \link{RankingLimma}, 
           \link{RankingEbam}, \link{RankingWilcEbam}, \link{RankingSam}, 
           \link{RankingBstat}, \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
-          \link{RankingPermutation}, \link{RankingGap}, \link[=wilcox.test]{wilcox.test}}
+          \link{RankingPermutation}}
 \keyword{univar}
 \examples{
 ## Load toy gene expression data

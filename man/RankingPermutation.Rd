@@ -1,12 +1,15 @@
 \name{RankingPermutation}
 \alias{RankingPermutation}
+\alias{RankingPermutation-methods}
+\alias{RankingPermutation,matrix,numeric-method}
+\alias{RankingPermutation,matrix,factor-method}
+\alias{RankingPermutation,ExpressionSet,character-method}
 \title{Ranking based on permutation tests.}
 \description{
  The function is a wrapper for \code{mt.sample.teststat}
- from the package \code{multtest} (Dudoit et al, 2003). The ranking is here
+ from the package \code{multtest} (Dudoit et al., 2003). The ranking is
  based on permutation p-values first, followed by the
  absolute value of the statistic.
- For \code{S4} method information, see \link{RankingPermutation-methods}.   
 }
 \usage{
 RankingPermutation(x, y, type = "unpaired", B = 100, gene.names = NULL, ...)
@@ -24,7 +27,7 @@ RankingPermutation(x, y, type = "unpaired", B = 100, gene.names = NULL, ...)
   \item{B}{The number of permutations to generate. Defaults to 100,
            but should be increased if computing power admits. Taking
            \code{B} too high, however, can lead to long computation
-           time, especially if called from \link{GetRepeatRanking}}
+           time, especially if the function is called from \link{RepeatRanking}}
   \item{gene.names}{An optional vector of gene names.}
   \item{\dots}{Further arguments passed to \code{mt.sample.teststat}
                from the package \code{multtest}. Can be used, for example,
@@ -41,14 +44,13 @@ RankingPermutation(x, y, type = "unpaired", B = 100, gene.names = NULL, ...)
             Multiple Hypothesis Testing in Microarray Experiments
             \emph{Statistical Science, 18, 71-103}}
 
-\author{Martin Slawski \email{martin.slawski@campus.lmu.de} \cr
-        Anne-Laure Boulesteix \url{http://www.slcmsr.net/boulesteix}}
+\author{Martin Slawski \cr
+        Anne-Laure Boulesteix}
 \seealso{
-         \link{GetRepeatRanking}, \link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
+         \link{RepeatRanking}, \link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
           \link{RankingBaldiLong}, \link{RankingFoxDimmic}, \link{RankingLimma}, 
           \link{RankingEbam}, \link{RankingWilcEbam}, \link{RankingSam}, 
-          \link{RankingBstat}, \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
-        \link{RankingGap}}
+          \link{RankingBstat}, \link{RankingShrinkageT}, \link{RankingSoftthresholdT}}
 \keyword{univar}
 \examples{
 ### Load toy gene expression data

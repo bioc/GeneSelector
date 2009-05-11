@@ -1,10 +1,13 @@
 \name{RankingFC}
 \alias{RankingFC}
+\alias{RankingFC-methods}
+\alias{RankingFC,matrix,numeric-method}
+\alias{RankingFC,matrix,factor-method}
+\alias{RankingFC,ExpressionSet,character-method}
 \title{Ranking based on the (log) foldchange}
 \description{
-  Naive ranking that only considers difference in means
-  without taking variances into account.\cr
-  For \code{S4} method information, see \link{RankingFC-methods}.  
+  Naive ranking procedure that only considers difference in means
+  without taking variances into account.
 }
 \usage{
 RankingFC(x, y, type = c("unpaired", "paired", "onesample"), 
@@ -25,12 +28,12 @@ RankingFC(x, y, type = c("unpaired", "paired", "onesample"),
            If \code{x} is an \code{ExpressionSet}, then \code{y}
            is a character specifying the phenotype variable in
            the output from \code{pData}.\cr
-           If \code{type = paired}, take care that the coding is
-           analogously to the requirement concerning \code{x}}
+           If \code{type = "paired"}, take care that the coding is
+           analogously to the requirement concerning \code{x}.}
   \item{type}{\describe{
                 \item{"unpaired":}{two-sample test.}
                 \item{"paired":}{paired test. Take care that the coding of \code{y}
-                                 is correct (s. above)}
+                                 is correct (s. above).}
                 \item{"onesample":}{\code{y} has only one level. 
                                     Test whether the true mean is different
                                     from zero.}
@@ -45,21 +48,20 @@ RankingFC(x, y, type = c("unpaired", "paired", "onesample"),
 
 \note{Take care that the \emph{log} foldchange is computed, therefore
 logarithmization might be necessary.\cr
-The p-values for the difference in means are based on a standard
-normal assumption. 
-}
+The p-values for the difference in means are computed under the assumption of a standard
+normal distribution.}
 
 \value{An object of class \link{GeneRanking}}
 
-\author{Martin Slawski \email{martin.slawski@campus.lmu.de} \cr
-        Anne-Laure Boulesteix \url{http://www.slcmsr.net/boulesteix}}
+\author{Martin Slawski \cr
+        Anne-Laure Boulesteix}
 
 \seealso{
-         \link{GetRepeatRanking}, \link{RankingTstat},  \link{RankingWelchT}, \link{RankingWilcoxon},
+         \link{RepeatRanking}, \link{RankingTstat},  \link{RankingWelchT}, \link{RankingWilcoxon},
           \link{RankingBaldiLong}, \link{RankingFoxDimmic}, \link{RankingLimma}, 
           \link{RankingEbam}, \link{RankingWilcEbam}, \link{RankingSam}, 
           \link{RankingBstat}, \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
-          \link{RankingPermutation}, \link{RankingGap}}
+          \link{RankingPermutation}}
 \keyword{univar}
 \examples{
 ## Load toy gene expression data

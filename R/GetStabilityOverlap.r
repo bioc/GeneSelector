@@ -4,7 +4,11 @@
 ### Author: Martin Slawski
 ### email: <Martin.Slawski@campus.lmu.de>
 ### date of creation: 24.8.2007, 27.8.2007
-### date(s) of updates:
+### date(s) of updates: 24./25.11.2008 (major)
+#                       27.11.2008: argument 'scheme' introduced.
+#                        3.12.2008: measure = 'union' removed, new method introduced.
+#                                   now both overlap and overlap score computed
+#                                   and returned automatically.
 #
 ### Brief description:
 #
@@ -18,48 +22,65 @@
 #
 ###**************************************************************************###
 
-################################################################################
-
-setClass(Class="GeneRanking",
-        representation(x="matrix", y="factor", statistic="numeric", ranking="numeric",
-                        pval="vector", type="character", method="character"))
-
-
-setClass(Class="RepeatRanking",
-        representation(original="GeneRanking", rankings="matrix", pvals="matrix",
-                       statistics = "matrix", scheme="character"))
-
-################################################################################
-
-setGeneric("GetStabilityOverlap", function(RR, decay = c("linear", "quadratic", "exponential"),
-                         scheme = c("rank", "pval"),...)
+setGeneric("GetStabilityOverlap", function(RR, scheme = c("original", "pairwise"),
+              decay = c("linear", "quadratic", "exponential"), alpha = 1, ...)
                             standardGeneric("GetStabilityOverlap"))
 
-setMethod("GetStabilityOverlap", signature(RR="RepeatRanking"),
-            function(RR, decay = c("linear", "quadratic", "exponential"),
-                         scheme = c("rank", "pval"), alpha=1, ...){
+setMethod("GetStabilityOverlap", signature(RR="RepeatedRanking"),
+            function(RR, scheme = c("original", "pairwise"),
+            decay = c("linear", "quadratic", "exponential"), alpha=1, ...){
+            
+scheme <- match.arg(scheme)
+if(!is.element(scheme, eval(formals(GetStabilityOverlap)$scheme)))
+stop("'scheme' must be either 'original' or 'pairwise' \n")
+
+#measure <- match.arg(measure)
+#if(!is.element(measure, eval(formals(GetStabilityOverlap)$measure)))
+#stop("'measure' must be either 'intersection' 'overlap_score' \n")
 
 decay <- match.arg(decay)
 if(!is.element(decay, eval(formals(GetStabilityOverlap)$decay)))
-stop("decay must be one of 'linear', 'quadratic', 'exponential' \n")
+stop("'decay' must be one of 'linear', 'quadratic', 'exponential' \n")
 if(alpha < 0) warning("'alpha' set to a negative value \n")
-scheme <- match.arg(scheme)
-if(!is.element(scheme, eval(formals(GetStabilityOverlap)$scheme)))
-stop("scheme must be either 'rank' or 'pval' \n")
 
- R0 <- RR@original@ranking
- R <- RR@rankings
- lx <- length(R0)
+ lx <- length(RR@original@ranking)
+
+ #maxscore <- 1:lx
  W <- switch(decay, linear=(1:lx)^(-1), quadratic=(1:lx)^(-2), exponential=exp(-alpha*(1:lx)))
+ maxscore <- cumsum(W*(1:lx))
 
- overlap <- apply(R, 2, function(z) overlap(R0, z, lx))
- scores <- apply(overlap, 2, function(z) cumsum(W*z))
- maxscore <- cumsum(W*(1:lx)) 
- scores <- 1/maxscore * scores
- 
- new("StabilityOverlap", overlap = overlap, scores = scores,
-                          weightscheme = list(decay=decay, scheme=scheme, alpha=alpha))
-
+ if(scheme == "original"){
+    R0 <- RR@original@ranking
+    R <- RR@rankings
+    ov <- apply(R, 2, function(z) overlap(order(R0), order(z), lx)) ### a matrix (several lists)
+    overlapscore <- apply(ov, 2, function(z) cumsum(W*z))
+    intersection <- 1/(1:lx) * ov
+    overlapscore <- 1/maxscore * overlapscore
+  }
+  
+ else{
+  bigR <- cbind(RR@original@ranking, RR@rankings)
+  Bplus <- ncol(bigR)
+  pairs <- choose(Bplus, 2)
+  intersection <-  overlapscore <- matrix(nrow = lx, ncol = pairs)
+  k <- 1
+   for(i in 1:Bplus){
+     j <- i+1
+    while(j <= Bplus){
+    ov <- overlap(order(bigR[,i]), order(bigR[,j]), lx)
+    score <- cumsum(W*ov)
+    intersection[,k] <- 1/(1:lx) * ov
+    overlapscore[,k] <-  1/maxscore * score
+    #colnames(intersection)[k] <- colnames(overlapscore)[k] <- paste(i,j, sep = "vs.")
+     j <- j+1
+     k <- k+1
+    }
+  }
  }
-)
+ noinformation <- list(intersection = (1:lx)/lx, overlapscore =  cumsum(W*(1:lx)/lx)/cumsum(W))
+                                  
+ new("StabilityOverlap",  intersection = intersection, overlapscore = overlapscore,
+                          noinformation = noinformation, scheme = scheme, decay = decay)
+
+})
 

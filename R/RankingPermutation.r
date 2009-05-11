@@ -56,15 +56,15 @@ setMethod("RankingPermutation", signature(x="matrix", y="numeric"),
           statistic <- permute[1,]
           pvals <- permute[2,]
 
-          ranking <- order(pvals, 1/abs(statistic))
+          ranking <- match(1:nrow(x), order(pvals, 1/abs(statistic)))
           if(!is.null(gene.names))
             names(pvals) <- names(statistic) <- gene.names
           else{
           if(!is.null(rownames(x)))
             names(pvals) <- names(statistic) <- rownames(x)
           }
-          new("GeneRanking", x=x, y=as.factor(y), statistic=statistic[ranking],
-          ranking=ranking, pval=pvals[ranking], type=type, method="Permutation")
+          new("GeneRanking", x=x, y=as.factor(y), statistic=statistic,
+          ranking=ranking, pval=pvals, type=type, method="Permutation")
 })
 
 ### signature: x=matrix, y=factor.

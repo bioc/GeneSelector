@@ -1,36 +1,30 @@
 \name{GenerateFoldMatrix}
 \alias{GenerateFoldMatrix}
-\title{Altered datasets via k-Jackknife or Label (class) exchange}
+\alias{GenerateFoldMatrix-methods}
+\alias{GenerateFoldMatrix,missing,numeric-method}
+\alias{GenerateFoldMatrix,missing,factor-method}
+\alias{GenerateFoldMatrix,ExpressionSet,character-method}
+\title{Altered datasets via k-Jackknife or label exchange}
 \description{
   Generates an object of class \link{FoldMatrix}
-  that is then processed by \link{GetRepeatRanking}
+  to be used for \link{RepeatRanking}.
 }
 
 \usage{
-GenerateFoldMatrix(x, y, k = 1, replicates = ifelse(k==1, ncol(x), 10), type = c("unpaired", "paired", "onesample"), minclassize = 2, balanced = FALSE, control)
+GenerateFoldMatrix(x, y, k = 1, replicates = ifelse(k==1, length(y), 10), type = c("unpaired", "paired", "onesample"), minclassize = 2, balanced = FALSE, control)
 }
 
 \arguments{
-   \item{x}{A \code{matrix} of gene expression values with \emph{rows}
-           corresponding to genes and columns corresponding to observations. \cr
-           Can alternatively an object of class \code{ExpressionSet}.\cr
-           If \code{type = paired}, the first half of the columns corresponds to 
-           the first measurements and the second half to the second ones. 
-           For instance, if there are 10 observations, each measured twice,
-           stored in an expression matrix \code{expr}, 
-           then \code{expr[,1]} is paired with \code{expr[,11]}, \code{expr[,2]}
-           with \code{expr[,12]}, and so on.}
-  \item{y}{If \code{x} is a matrix, then \code{y} may be
-           a \code{numeric} vector or a factor with at most two levels.\cr
+   \item{x}{Only needed if \code{y} is  stored within an \code{ExpressionSet}.}
+  \item{y}{\code{y} may be a \code{numeric} vector or a factor with at most two levels.\cr
            If \code{x} is an \code{ExpressionSet}, then \code{y}
-           is a character specifyig the phenotype variable in
+           is a character specifying the phenotype variable in
            the output from \code{pData}.\cr
-           If \code{type = paired}, take care that the coding is
-           analogously to the requirement concerning \code{x}}.
+           If \code{type = "paired"}, take care that the coding is correct.}
   \item{k}{Number of observations that are removed or whose labels
-           are exchanged. Label exchange means that the actual label
+           are exchanged. Label exchange means that the observed label
            is replaced by the label of the other class 
-           (s. \link{GetRepeatRanking}).}
+           (s. \link{RepeatRanking}).}
   \item{replicates}{Number of replications if \code{k>1}.}
   \item{type}{One of \code{"paired", "unpaired", "onesample"}, depends
               on the type of test to be performed, s. for example
@@ -42,8 +36,8 @@ GenerateFoldMatrix(x, y, k = 1, replicates = ifelse(k==1, ncol(x), 10), type = c
   \item{balanced}{If \code{balanced=TRUE}, then the proportions
                        of the two classes are (at least approximately) the same 
                         for each replication. It is a shortcut for a certain value of 
-                       \code{minclasssize}. May not reasonable, if class
-                       proportions are unbalanced.}
+                       \code{minclasssize}. May not be reasonable if class
+                       proportions in the given dataset are unbalanced in the original sample.}
   \item{control}{Further control arguments concerning the generation 
                  process of the fold matrix, s. \link{samplingcontrol}.}
 }
@@ -62,20 +56,18 @@ GenerateFoldMatrix(x, y, k = 1, replicates = ifelse(k==1, ncol(x), 10), type = c
             Bootstrap Methods and their Application.
             \emph{Cambridge University Press}}
 
-\author{Martin Slawski \email{martin.slawski@campus.lmu.de} \cr
-        Anne-Laure Boulesteix \url{http://www.slcmsr.net/boulesteix}}
+\author{Martin Slawski \cr
+        Anne-Laure Boulesteix}
 
-\seealso{\link{GenerateBootMatrix}, \link{GetRepeatRanking}}
+\seealso{\link{GenerateBootMatrix}, \link{RepeatRanking}}
 \keyword{univar}
 \examples{
  ## Load toy gene expression data
 data(toydata)
 ### class labels
 yy <- toydata[1,]
-### gene expression
-xx <- toydata[-1,]
 ### Generate Leave-One-Out / Exchange-One-Label matrix
-loo <- GenerateFoldMatrix(xx, yy, k=1)
+loo <- GenerateFoldMatrix(y = yy, k=1)
 ### A more complex example
-l3o <- GenerateFoldMatrix(xx, yy, k=3, replicates=30, minclassize=5) 
+l3o <- GenerateFoldMatrix(y = yy, k=3, replicates=30, minclassize=5)
 }

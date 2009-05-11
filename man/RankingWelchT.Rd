@@ -1,12 +1,15 @@
 \name{RankingWelchT}
 \alias{RankingWelchT}
+\alias{RankingWelchT-methods}
+\alias{RankingWelchT,matrix,numeric-method}
+\alias{RankingWelchT,matrix,factor-method}
+\alias{RankingWelchT,ExpressionSet,character-method}
 \title{Ranking based on the Welch t statistic.}
 \description{
 Performs univariate (rowwise) Welch tests on a gene expression matrix.
   The Welch t statistic is a better alternative to the 
   'ordinary' t statistic in the two sample, unequal variances
-  setting.\cr
-  For \code{S4} method information, see \link{RankingWelchT-methods}.  
+  setting.
 }
 \usage{
 RankingWelchT(x, y, type = "unpaired", pvalues = TRUE, gene.names = NULL, ...)
@@ -29,14 +32,14 @@ RankingWelchT(x, y, type = "unpaired", pvalues = TRUE, gene.names = NULL, ...)
 }
 
 \value{An object of class \link{GeneRanking}.}
-\author{Martin Slawski \email{martin.slawski@campus.lmu.de} \cr
-        Anne-Laure Boulesteix \url{http://www.slcmsr.net/boulesteix}}
+\author{Martin Slawski \cr
+        Anne-Laure Boulesteix}
 \seealso{
-         \link{GetRepeatRanking}, \link{RankingTstat}, \link{RankingFC},  \link{RankingWilcoxon},
+         \link{RepeatRanking}, \link{RankingTstat}, \link{RankingFC},  \link{RankingWilcoxon},
           \link{RankingBaldiLong}, \link{RankingFoxDimmic}, \link{RankingLimma}, 
           \link{RankingEbam}, \link{RankingWilcEbam}, \link{RankingSam}, 
           \link{RankingBstat}, \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
-          \link{RankingPermutation}, \link{RankingGap}}
+          \link{RankingPermutation}}
 \keyword{univar}
 \examples{
 ## Load toy gene expression data

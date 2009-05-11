@@ -1,15 +1,17 @@
 \name{RankingSoftthresholdT}
 \alias{RankingSoftthresholdT}
+\alias{RankingSoftthresholdT-methods}
+\alias{RankingSoftthresholdT,matrix,numeric-method}
+\alias{RankingSoftthresholdT,matrix,factor-method}
+\alias{RankingSoftthresholdT,ExpressionSet,character-method}
 \title{Ranking via the 'soft-threshold' t-statistic}
 \description{
- The 'soft-threshold' statistic is constructed
- using a linear regression model with the \code{L1}
+ The 'soft-threshold' statistic (Wu, 2005) is constructed
+ using a linear regression model with an \code{L1}
  penalty (also referred to as LASSO penalty). In special
  cases (like here) the LASSO estimator can be 
- calculated analytically and is then called 'soft threshold'
- estimator (Wu,2005).\cr
- For \code{S4} method information, see \link{RankingSoftthresholdT-methods}.
-}
+ calculated analytically and is then known as 'soft threshold
+ estimator'.}
 \usage{
 RankingSoftthresholdT(x, y, type = c("unpaired", "paired", "onesample"),
                       lambda = c("lowess", "cor", "user"), userlambda = NULL, 
@@ -30,12 +32,12 @@ RankingSoftthresholdT(x, y, type = c("unpaired", "paired", "onesample"),
            If \code{x} is an \code{ExpressionSet}, then \code{y}
            is a character specifying the phenotype variable in
            the output from \code{pData}.\cr
-           If \code{type = paired}, take care that the coding is
-           analogously to the requirement concerning \code{x}}
+           If \code{type = "paired"}, take care that the coding is
+           analogously to the requirement concerning \code{x}.}
   \item{type}{\describe{
                 \item{"unpaired":}{two-sample test.}
                 \item{"paired":}{paired test. Take care that the coding of \code{y}
-                                 is correct (s. above)}
+                                 is correct (s. above).}
                 \item{"onesample":}{\code{y} has only one level. 
                                     Test whether the true mean is different
                                     from zero.}
@@ -50,7 +52,7 @@ RankingSoftthresholdT(x, y, type = c("unpaired", "paired", "onesample"),
 \details{
   There are currently three ways of specifying the shrinkage intensity
   \code{lambda}. Both \code{"lowess"} and \code{"cor"} are relatively
-  slow, especially if rankings are repeated (\link{GetRepeatRanking}).
+  slow, especially if rankings are calculated repeatedly (\link{RepeatRanking}).
   Therefore, a 'reasonable' value can be set by the user.
 }
 
@@ -58,16 +60,16 @@ RankingSoftthresholdT(x, y, type = c("unpaired", "paired", "onesample"),
 \references{Wu, B. (2005). Differential gene expression using
             penalized linear regression models: The improved
             SAM statistic. \emph{Bioinformatics, 21, 1565-1571}}
-\author{Martin Slawski \email{martin.slawski@campus.lmu.de} \cr
-        Anne-Laure Boulesteix \url{http://www.slcmsr.net/boulesteix}}
-\note{The code is a modified version of that found in the \code{st}
-      package of Opgen-Rhein and Strimmer (2007). }
+\author{Martin Slawski \cr
+        Anne-Laure Boulesteix}
+\note{The code is a modified version of an implementation available in the \code{st}
+      package of Opgen-Rhein and Strimmer (2007).}
 \seealso{
-         \link{GetRepeatRanking}, \link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
+         \link{RepeatRanking}, \link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
           \link{RankingBaldiLong}, \link{RankingFoxDimmic}, \link{RankingLimma}, 
           \link{RankingEbam}, \link{RankingWilcEbam}, \link{RankingSam}, 
           \link{RankingBstat}, \link{RankingShrinkageT},  
-          \link{RankingPermutation}, \link{RankingGap}}
+          \link{RankingPermutation}}
 \keyword{univar}
 \examples{
 ### Load toy gene expression data

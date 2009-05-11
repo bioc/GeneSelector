@@ -40,16 +40,18 @@ setMethod("RankingWilcoxon", signature(x="matrix", y="numeric"),
           if(nlevels(y) != 2)
           stop("Type has been chosen 'unpaired', but y has not exactly two levels ! \n")
           taby <- table(y)
-          levy <- levels(y)[1]
+          levy <- names(taby)[which.max(taby)]
           ind <- (y==levy)
           Rx <- apply(x, 1, rank)
-          r1 <- colSums(Rx[ind, ,drop=FALSE])-sum(1:min(taby))
+          r1 <- colSums(Rx[ind, ,drop=FALSE])-sum(1:max(taby))
           e1 <- taby[1]*taby[2]/ 2
+          #browser()                       
           if(pvalues){
               maxr <- sum((min(taby)+1):length(y))-sum(1:sum(ind)) 
               pvals <- 2*pwilcox(ifelse(r1<e1, maxr-r1, r1), 
                                 taby[1], taby[2], lower.tail=FALSE)
             }
+                                 
           else pvals <- rep(NA, nrow(x))
           }
           if(type == "paired"){
@@ -80,23 +82,23 @@ setMethod("RankingWilcoxon", signature(x="matrix", y="numeric"),
           ly <- length(y)
           #r1 <- colSums(Rx[indx, ,drop=FALSE])
           e1 <- (ly)*(ly+1)/4
+          maxr <- sum(1:ly)                        
           if(pvalues){
-                maxr <- sum(1:ly) 
                 pvals <- 2*psignrank(ifelse(r1<e1, maxr-r1, r1), n=ly, lower.tail=FALSE)
             }
            else pvals <- rep(NA, nrow(x))
           }
 
           statistic <- r1
-          ranking <- order(abs(r1-e1), decreasing=TRUE)
+          ranking <- rank(-abs(r1 - e1), ties.method = "first")
           if(!is.null(gene.names))
           names(pvals) <- names(statistic) <- gene.names
           else{
           if(!is.null(rownames(x)))
           names(pvals) <- names(statistic) <- rownames(x)
           }
-          new("GeneRanking", x=x, y=as.factor(y), statistic=statistic[ranking],
-          ranking=ranking, pval=pvals[ranking], type=type, method="Wilcoxon")
+          new("GeneRanking", x=x, y = as.factor(y), statistic=statistic,
+          ranking=ranking, pval=pvals, type=type, method="Wilcoxon")
 }
 )
 

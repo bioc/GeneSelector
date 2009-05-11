@@ -4,6 +4,7 @@
 ### email: <Martin.Slawski@campus.lmu.de>
 ### date of creation: 31.8.2007
 ### date(s) of updates: 3.9.2007
+### major revision:  3.12.2008
 #
 ### Brief description:
 #
@@ -13,115 +14,61 @@
 #
 ### Further comments and notes:
 #
-#   s. also: AggregateBayes.r
-#   much simpler/faster and probably also more stable.
 #
 ###**************************************************************************###
 
-################################################################################
-
-setClass(Class="GeneRanking",
-        representation(x="matrix", y="factor", statistic="numeric", ranking="numeric",
-                        pval="vector", type="character", method="character"))
-
-setClass(Class="RepeatRanking",
-        representation(original="GeneRanking", rankings="matrix", pvals="matrix",
-                       statistics = "matrix", scheme="character"))
-
-setClass(Class="StabilityLm",
-        representation(coefficients="numeric", R2vec="numeric",
-                       multivariateR2 = "numeric", residuals = "numeric",
-                       residuals.unscaled = "numeric", weightscheme = "list"))
-                       
-
-setClass(Class="StabilityOverlap",
-        representation(overlap = "matrix", scores ="matrix", weightscheme = "list"))                       
-
-################################################################################
-
-
-setGeneric("AggregateSimple", function(RR, S,
-            aggregatefun=c("mode", "mean", "median", "quantile"), q=NULL)
+setGeneric("AggregateSimple", function(RR, measure = c("mode", "mean", "trimmed.mean", "median", "quantile"), q=NULL, trim = NULL)
             standardGeneric("AggregateSimple"))
             
 
-setMethod("AggregateSimple", signature(RR="RepeatRanking", S="StabilityLm"),
-            function(RR, S, aggregatefun=c("mode", "mean", "median", "quantile"),
-                      q=NULL){
-R0 <- RR@original@ranking
-R  <- RR@rankings
-p <- nrow(R)
-omega <- S@R2vec
-fun <- match.arg(aggregatefun)
-if(!is.element(fun, eval(formals(AggregateSimple)$aggregatefun)))
-stop("Invalid 'aggregatefun' specified \n")
-if(is.null(q) & fun  == "quantile"){
-posteriorfun <- "median"
-warning("aggregatefun is 'quantile', but argument 'q' is NULL; set to 0.5 \n")
-}
-r0 <- match(1:p, R0)
-Rb <- apply(R, 2, function(z) match(1:p, z))
-Rb0 <- cbind(r0, Rb)
+setMethod("AggregateSimple", signature(RR="RepeatedRanking"),
+            function(RR, measure = c("mode", "mean", "trimmed.mean", "median", "quantile"), q=NULL, trim = NULL){
 
-aggregatefun <-  switch(fun,  mode=function(rb){
+  R <- cbind(RR@original@ranking, RR@rankings) ### note: completely symmetric treatment.
+  p <- nrow(R)
+
+  measure <- match.arg(measure)
+  if(!is.element(measure, eval(formals(AggregateSimple)$measure)))
+  stop("Invalid 'measure' specified \n")
+
+  if(is.null(q) & measure  == "quantile"){
+    measure <- "median"
+    warning("'measure' is 'quantile', but argument 'q' is NULL; set to 0.5 \n")
+  }
+  
+  if(!is.null(trim) && (trim < 0 || trim > 0.5))
+   stop("'trim' may range from 0 to 0.5 \n")
+  
+  if(is.null(trim) & measure  == "trimmed.mean"){
+    measure <- "mean"
+    warning("'measure' is 'trimmed.mean', but argument 'trim' is NULL; set measure to 'mean' \n")
+  }
+
+  aggregatefun <-  switch(measure,  mode=function(rb){
                                         tab <- table(rb)
                                         tabnames <- names(tab)
                                         maxtab <- tab[which.max(tab)]
                                         modes <- as.numeric(tabnames[tab == maxtab])
                                         lmodes <- length(modes)
                                         if(lmodes == 1) return(modes)
-                                        else{
-                                         sumw <- sapply(modes, function(z) sum(omega[rb == z]))
-                                         return(modes[which.max(sumw)])
-                                         }
+                                        else return(modes[which.min(abs(modes - rb[1]))])
                                         },
-                                        mean=function(rb) weighted.mean(rb, c(1, omega)),
+                                        mean=function(rb) mean(rb),
+                                        trimmed.mean = function(rb) mean(rb, trim = trim),
                                         median=function(rb) median(rb),
                                         quantile=function(rb) quantile(rb, q))
 
-summary <- apply(Rb0, 1, aggregatefun)
-new("AggregatedRanking", posterior=NA, summary=summary, pval=RR@original@pval, 
-     type="simple", fun=fun, method = RR@original@method)
- }
-)
 
-setMethod("AggregateSimple", signature(RR="RepeatRanking", S="StabilityOverlap"),
-            function(RR, S, aggregatefun=c("mode", "mean", "median", "quantile"),
-                      q=NULL){
-R0 <- RR@original@ranking
-R  <- RR@rankings
-p <-  length(R0)
-omega <- S@scores[p,]
-fun <- match.arg(aggregatefun)
-if(!is.element(fun, eval(formals(AggregateSimple)$aggregatefun)))
-stop("Invalid 'aggregatefun' specified \n")
-if(is.null(q) & fun == "quantile"){
-posteriorfun <- "median"
-warning("aggregatefun is 'quantile', but argument 'q' is NULL; set to 0.5 \n")
-}
-r0 <- match(1:p, R0)
-Rb <- apply(R, 2, function(z) match(1:p, z))
-Rb0 <- cbind(r0, Rb)
+  summary <- apply(R, 1, aggregatefun)
+  
 
-aggregatefun <-  switch(fun,  mode=function(rb){
-                                        tab <- table(rb)
-                                        tabnames <- names(tab)
-                                        maxtab <- tab[which.max(tab)]
-                                        modes <- as.numeric(tabnames[tab == maxtab])
-                                        lmodes <- length(modes)
-                                        if(lmodes == 1) return(modes)
-                                        else{
-                                         sumw <- sapply(modes, function(z) sum(omega[rb == z]))
-                                         return(modes[which.max(sumw)])
-                                         }
-                                        },
-                                        mean=function(rb) weighted.mean(rb, c(1, omega)),
-                                        median=function(rb) median(rb),
-                                        quantile=function(rb) quantile(rb, q))
-
-summary <- apply(Rb0, 1, aggregatefun)
-new("AggregatedRanking", posterior=NA, summary=summary, pval=RR@original@pval, 
-     type="simple", fun=fun, method = RR@original@method)
+  measureout <- switch(measure, mode = "most frequent",
+                                mean = "mean",
+                                trimmed.mean = paste(trim, "trimmed mean", sep="%-"),
+                                median = "median",
+                                quantile = paste(q, "quantile", sep = "-"))
+  ### note: ties 'ignored'.
+  new("AggregatedRanking", ranking = rank(summary, ties.method = "first"), type= "simple", measure = measureout, method = RR@original@method)
  }
 )
 
