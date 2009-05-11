@@ -7,8 +7,8 @@
 
 \input{preamble.tex}
 \title{\texttt{GeneSelector} package vignette}
-\author{Martin Slawski$^{1,2}$ \footnote{\url{Martin.Slawski@campus.lmu.de}} $\qquad$
-        Anne-Laure Boulesteix$^{1,2,3}$ \footnote{\url{boulesteix@stat.uni-muenchen.de}}}
+\author{Martin Slawski$^{1,2}$ \footnote{\url{ms@cs.uni-sb.de}} $\qquad$
+        Anne-Laure Boulesteix$^{1,2,3}$ \footnote{\url{boulesteix@ibe.med.uni-muenchen.de}}}
 
 \begin{document}
 \date{\normalsize{$^1$ Sylvia Lawry Centre, Munich, Germany \\
@@ -64,7 +64,8 @@ as possible false positives. In this spirit, our package offers a
 \scriptsize
 \begin{table} %\label{methodsoverview}
 \begin{tabular}[h!]{|l|l|l|l|} 
-\hline \\
+\hline 
+\\
 \textbf{Method} & \textbf{Function name} & \textbf{Package} & \textbf{Reference} \\
 \hline
 Foldchange & \texttt{RankingFC} &    &  \\
@@ -266,7 +267,8 @@ relevance.
 
 \begin{table} %\label{methodsoverview}
 \begin{tabular}[h!]{|l|l|l|} 
-\hline \\
+\hline 
+\\
 \textbf{Name} & \textbf{Definition} & \textbf{Reference} \\
 \hline
 & & \\

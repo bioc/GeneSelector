@@ -41,10 +41,10 @@ Important steps of the workflow:
 \item{8.}{Run the \link{GeneSelector}.}
 }
 }
-\author{Martin Slawski \email{martin.slawski@campus.lmu.de}, \cr
-        Anne-Laure Boulesteix \email{boulesteix@stat.uni-muenchen.de}
+\author{Martin Slawski \email{ms@cs.uni-sb.de}, \cr
+        Anne-Laure Boulesteix \email{boulesteix@ibe.med.uni-muenchen.de}
 
-Maintainer: Martin Slawski \email{martin.slawski@campus.lmu.de}.
+Maintainer: Martin Slawski \email{ms@cs.uni-sb.de}.
 }
 \keyword{univar}
 
