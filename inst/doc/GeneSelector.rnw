@@ -3,7 +3,7 @@
 %\VignetteDepends{GeneSelector}
 %\VignettePackage{GeneSelector}
 
-%%% Seitenlayout bitte massiv ueberarbeiten.
+
 
 \input{preamble.tex}
 \title{\texttt{GeneSelector} package vignette}
