@@ -36,7 +36,7 @@ standardGeneric("GenerateBootMatrix"))
 ### signature: x=matrix, y=numeric.
 
 setMethod("GenerateBootMatrix", signature(x="missing", y="numeric"),
-function(y, replicates=50, type=c("unpaired", "paired", "onesample"),
+function(x, y, replicates=50, type=c("unpaired", "paired", "onesample"),
          maxties=NA, minclassize=2, balancedclass=FALSE, balancedsample=FALSE, 
          control){
   ly <- length(y)
@@ -263,7 +263,7 @@ function(y, replicates=50, type=c("unpaired", "paired", "onesample"),
 ### signature: x=matrix, y=factor.
 
 setMethod("GenerateBootMatrix", signature(x="missing", y="factor"),
-function(y, replicates=50, type=c("unpaired", "paired", "onesample"),
+function(x, y, replicates=50, type=c("unpaired", "paired", "onesample"),
          maxties=NA, minclassize=2, balancedclass=FALSE, balancedsample=FALSE, control){
          GenerateBootMatrix(as.numeric(y), replicates, type, maxties, minclassize, 
                             balancedsample, balancedclass, control)})
