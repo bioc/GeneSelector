@@ -17,8 +17,8 @@
 \tabular{ll}{
 Package: \tab GeneSelector\cr
 Type: \tab Package\cr
-Version: \tab 2.0.0\cr
-Date: \tab 2009-1-2\cr
+Version: \tab 1.5.1\cr
+Date: \tab 2009-13-5\cr
 License: \tab GPL (version 2 or later) \cr
 }
 Important steps of the workflow:
