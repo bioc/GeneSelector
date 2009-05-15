@@ -41,7 +41,7 @@ decay = c("linear", "quadratic", "exponential"), alpha = 1, ...)
 \value{An object of class \link{StabilityDistance}}
 
 \references{Jurman, G., Merler, S., Barla, A., Paoli, S., Galea, A., Furlanello, C. (2008).\cr
-Algebraic stability indicators for ranked lists in molecular profiling. \emph{Bioinformatics 24, 258–264}
+Algebraic stability indicators for ranked lists in molecular profiling. \emph{Bioinformatics 24, 258-264}
 
 DeConde, R. P., Hawley, S., Falcon, S., Clegg, N., Knudsen, B., Etzioni, R.  (2006).\cr
 Combining results of microarray experiments: a rank aggregation approach. \emph{Statistical Applications in Genetics and

@@ -50,7 +50,7 @@
 
             Yang, X., Bentink, S., Scheid, S., Spang, R. (2006) \cr
             Similarities of ordered gene lists. \emph{Journal of Bioinformatics
-and Computational Biology 4, 693–708}
+and Computational Biology 4, 693-708}
 
             Lottaz, C., Yang, X., Scheid, S., Spang, R. (2006) \cr
             OrderedList - a Bioconductor package for detecting

@@ -29,14 +29,14 @@
 }
 
 \references{Stolovitzky, G. (2003).\cr
-Gene selection in microarray data: the elephant, the blind men and our algorithms. \emph{Current Opinion in Structural Biology 13, 370–376}
+Gene selection in microarray data: the elephant, the blind men and our algorithms. \emph{Current Opinion in Structural Biology 13, 370-376}
 
             Jurman, G., Merler, S., Barla, A., Paoli, S., Galea, A., Furlanello, C. (2008).\cr
-Algebraic stability indicators for ranked lists in molecular profiling. \emph{Bioinformatics 24, 258–264}
+Algebraic stability indicators for ranked lists in molecular profiling. \emph{Bioinformatics 24, 258-264}
 
             Yang, X., Bentink, S., Scheid, S., Spang, R. (2006) \cr
             Similarities of ordered gene lists. \emph{Journal of Bioinformatics
-and Computational Biology 4, 693–708}
+and Computational Biology 4, 693-708}
 
             Lottaz, C., Yang, X., Scheid, S., Spang, R. (2006) \cr
             OrderedList - a Bioconductor package for detecting

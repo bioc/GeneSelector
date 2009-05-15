@@ -10,13 +10,15 @@
            via significance analysis in multiple testing procedures. Then, all genes are checked whether
             their ranks fall below this threshold \emph{consistenly} in all
             ranking procedures used. If  this holds, then the gene is selected.\cr
-            A final order of the genes is defined by the following criteria
+            A final order of the genes is defined by the following
+	    criteria
+	    \describe{
             \item{1.}{A user-defined ranking of the used ranking procedures, i.e.
                       the user decides which statistic he or she considers most important.}
             \item{2.}{'Selection', i.e. falling below the threshold.}
             \item{3.}{The obtained ranks. The rank from the most important
                       ranking procedure is considered, then that from the second
-                      most important, and so on.} 
+                      most important, and so on.}} 
             }
 \usage{
 GeneSelector(Rlist, ind = NULL, indstatistic = 1:length(Rlist), 
