@@ -15,7 +15,7 @@
 \section{Slots}{
 	 \describe{
     \item{\code{final}:}{Numeric vector storing the final ranks as provided by the \code{GeneSelector} procedure.}
-    \item{\code{rankmatrix}:}{Matrix of rankings used as input for the \code{GeneSelector}.}
+    \item{\code{rankings}:}{Matrix of rankings used as input for the \code{GeneSelector}.}
     \item{\code{inout}:}{Matrix arranged in the same way as \code{rankmatrix},
                          but information is now binary: If \code{rankmatrix[i,j]} is smaller than the specified threshold,
                          then \code{inout[i,j]} equals \code{"+"} symbolizing selection,
