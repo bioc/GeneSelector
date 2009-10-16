@@ -1,23 +1,31 @@
-import(methods, Biobase)
-importFrom(graphics, plot)
-import(stats)
+import(methods)
+
+importClassesFrom(Biobase, ExpressionSet)
+importMethodsFrom(Biobase, exprs, pData)
+
+importFrom(graphics, abline, layout, legend, par, plot, points, rect, text)
+importFrom(grDevices, dev.interactive, terrain.colors)
+
+importFrom(stats, cor, hclust, heatmap, IQR, lowess, mad, median,
+           model.matrix, pf, pnorm, psignrank, pwilcox, quantile,
+           rnorm, sd, var)
 
 useDynLib(GeneSelector)
 
 exportClasses("GeneRanking", "FoldMatrix", "BootMatrix", "RepeatedRanking",
               "StabilityOverlap", "StabilityDistance", "StabilityUnion", 
-"AggregatedRanking", "GeneSelectorOutput")
+              "AggregatedRanking", "GeneSelectorOutput")
 
 
 exportMethods("show", "summary", "toplist", "plot", "SelectedGenes", 
-                "RankingBaldiLong",
-                "RankingEbam", "RankingFC", "RankingFoxDimmic", "RankingLimma", "RankingPermutation",
-                "RankingShrinkageT", "RankingSoftthresholdT",
-                "RankingTstat", "RankingWelchT", "RankingWilcEbam", "RankingWilcoxon",
-                "GenerateFoldMatrix", "GenerateBootMatrix",
-                "RepeatRanking", "GetStabilityOverlap", "GetStabilityDistance", "GetStabilityUnion", 
-		"AggregateSimple", "AggregatePenalty", "AggregateMC", "AggregateSVD", "GeneSelector",
-                 "HeatmapRankings", "MergeRankings", "MergeMethods", "dispersion")
+              "RankingBaldiLong",
+              "RankingEbam", "RankingFC", "RankingFoxDimmic", "RankingLimma", "RankingPermutation",
+              "RankingSam", "RankingShrinkageT", "RankingSoftthresholdT",
+              "RankingTstat", "RankingWelchT", "RankingWilcEbam", "RankingWilcoxon",
+              "GenerateFoldMatrix", "GenerateBootMatrix",
+              "RepeatRanking", "GetStabilityOverlap", "GetStabilityDistance", "GetStabilityUnion", 
+              "AggregateSimple", "AggregatePenalty", "AggregateMC", "AggregateSVD", "GeneSelector",
+              "HeatmapRankings", "MergeRankings", "MergeMethods", "dispersion")
 
 export("samplingcontrol")
 
