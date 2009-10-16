@@ -67,8 +67,7 @@ to be equal to the number of observations (or even less).
 \seealso{
          \link{RepeatRanking}, \link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
          \link{RankingFoxDimmic}, \link{RankingLimma}, 
-          \link{RankingEbam}, \link{RankingWilcEbam}, \link{RankingSam}, 
-          \link{RankingBstat}, \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
+          \link{RankingEbam}, \link{RankingWilcEbam}, \link{RankingSam}, \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
           \link{RankingPermutation}}
 \keyword{univar}
 \examples{

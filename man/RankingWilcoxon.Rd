@@ -55,7 +55,7 @@ RankingWilcoxon(x, y, type = c("unpaired", "paired", "onesample"), pvalues = FAL
          \link{RepeatRanking}, \link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT},
           \link{RankingBaldiLong}, \link{RankingFoxDimmic}, \link{RankingLimma}, 
           \link{RankingEbam}, \link{RankingWilcEbam}, \link{RankingSam}, 
-          \link{RankingBstat}, \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
+          \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
           \link{RankingPermutation}}
 \keyword{univar}
 \examples{

@@ -38,7 +38,7 @@ RankingWelchT(x, y, type = "unpaired", pvalues = TRUE, gene.names = NULL, ...)
          \link{RepeatRanking}, \link{RankingTstat}, \link{RankingFC},  \link{RankingWilcoxon},
           \link{RankingBaldiLong}, \link{RankingFoxDimmic}, \link{RankingLimma}, 
           \link{RankingEbam}, \link{RankingWilcEbam}, \link{RankingSam}, 
-          \link{RankingBstat}, \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
+          \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
           \link{RankingPermutation}}
 \keyword{univar}
 \examples{

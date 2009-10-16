@@ -50,7 +50,7 @@ RankingPermutation(x, y, type = "unpaired", B = 100, gene.names = NULL, ...)
          \link{RepeatRanking}, \link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
           \link{RankingBaldiLong}, \link{RankingFoxDimmic}, \link{RankingLimma}, 
           \link{RankingEbam}, \link{RankingWilcEbam}, \link{RankingSam}, 
-          \link{RankingBstat}, \link{RankingShrinkageT}, \link{RankingSoftthresholdT}}
+          \link{RankingShrinkageT}, \link{RankingSoftthresholdT}}
 \keyword{univar}
 \examples{
 ### Load toy gene expression data

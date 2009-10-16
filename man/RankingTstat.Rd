@@ -51,7 +51,7 @@ RankingTstat(x, y, type = c("unpaired", "paired", "onesample"), pvalues = TRUE, 
          \link{RepeatRanking}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
           \link{RankingBaldiLong}, \link{RankingFoxDimmic}, \link{RankingLimma}, 
           \link{RankingEbam}, \link{RankingWilcEbam}, \link{RankingSam}, 
-          \link{RankingBstat}, \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
+          \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
           \link{RankingPermutation}}
 \keyword{univar}
 \examples{

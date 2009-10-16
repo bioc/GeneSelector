@@ -57,7 +57,7 @@ by \link{GenerateFoldMatrix} or \link{GenerateBootMatrix}, respectively.\cr
          \link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
           \link{RankingBaldiLong}, \link{RankingFoxDimmic}, \link{RankingLimma}, 
           \link{RankingEbam}, \link{RankingWilcEbam}, \link{RankingSam}, 
-          \link{RankingBstat}, \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
+          \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
           \link{RankingPermutation}}
 \keyword{univar}         
 \examples{

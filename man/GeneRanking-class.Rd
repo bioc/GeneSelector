@@ -10,8 +10,7 @@
 \title{"GeneRanking"}
 \description{Object returned by all implemented ranking methods (\link{RankingTstat}, \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
           \link{RankingBaldiLong}, \link{RankingFoxDimmic}, \link{RankingLimma}, 
-          \link{RankingEbam}, \link{RankingWilcEbam}, \link{RankingSam}, 
-          \link{RankingBstat}, \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
+          \link{RankingEbam}, \link{RankingWilcEbam}, \link{RankingSam}, \link{RankingShrinkageT}, \link{RankingSoftthresholdT}, 
           \link{RankingPermutation}).}
 
 \section{Slots}{

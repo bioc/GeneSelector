@@ -27,7 +27,7 @@ Important steps of the workflow:
           \link{RankingFC}, \link{RankingWelchT}, \link{RankingWilcoxon},
           \link{RankingBaldiLong}, \link{RankingFoxDimmic}, 
           \link{RankingLimma}, \link{RankingEbam}, \link{RankingWilcEbam},
-            \link{RankingSam}, \link{RankingBstat}, \link{RankingShrinkageT},
+            \link{RankingSam}, \link{RankingShrinkageT},
             \link{RankingSoftthresholdT}, \link{RankingPermutation}}
 \item{2.}{Inspect the toplist using \code{toplist}.}
 \item{3.}{Prepare altered datasets using \link{GenerateFoldMatrix} or
