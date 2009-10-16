@@ -1,11 +1,11 @@
 Package: GeneSelector
 Version: 2.0.5
-Date: 2009-18-5
+Date: 2009-16-10
 Title: Stability and Aggregation of ranked gene lists
 Author: Martin Slawski <martin.slawski@cs.uni-sb.de>, Anne-Laure Boulesteix <boulesteix@ibe.med.uni-muenchen.de>. 
 Maintainer: Martin Slawski <martin.slawski@cs.uni-sb.de>
 Depends: R (>= 2.5.1), methods, stats, Biobase
-Suggests: multtest, siggenes, samr, limma, sma
+Suggests: multtest, siggenes, samr, limma
 Description: The term 'GeneSelector' refers to a filter selecting those genes 
 	     which are consistently identified as differentially 
 	     expressed using various statistical procedures. 
@@ -22,7 +22,7 @@ Collate: classes.r GenerateFoldMatrix.r GenerateBootMatrix.r
          RepeatRanking.r GetStabilityOverlap.r GetStabilityDistance.r GetStabilityUnion.r
          AggregateSimple.r AggregatePenalty.r AggregateMC.r AggregateSVD.r
          GeneSelector.r HeatmapRankings.r
-         RankingBaldiLong.r RankingBstat.r RankingEbam.r
+         RankingBaldiLong.r RankingEbam.r
          RankingFC.r RankingFoxDimmic.r RankingLimma.r RankingPermutation.r RankingSam.r
          RankingShrinkageT.r RankingSoftthresholdT.r
          RankingTstat.r RankingWelchT.r RankingWilcEbam.r
