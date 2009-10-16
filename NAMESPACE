@@ -10,7 +10,7 @@ exportClasses("GeneRanking", "FoldMatrix", "BootMatrix", "RepeatedRanking",
 
 
 exportMethods("show", "summary", "toplist", "plot", "SelectedGenes", 
-                "RankingBaldiLong", "RankingBstat",
+                "RankingBaldiLong",
                 "RankingEbam", "RankingFC", "RankingFoxDimmic", "RankingLimma", "RankingPermutation",
                 "RankingShrinkageT", "RankingSoftthresholdT",
                 "RankingTstat", "RankingWelchT", "RankingWilcEbam", "RankingWilcoxon",
