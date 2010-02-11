@@ -107,6 +107,6 @@ setMethod("GetStabilityDistance", signature(RR="RepeatedRanking"),
       
       new("StabilityDistance", scores =  scores, noinformation = noinformation, measure = measure, scheme = scheme, decay = decay)
        })                
-  
+  
  
 

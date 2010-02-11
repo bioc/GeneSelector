@@ -10,6 +10,7 @@ importFrom(stats, cor, hclust, heatmap, IQR, lowess, mad, median,
            model.matrix, pf, pnorm, psignrank, pwilcox, quantile,
            rnorm, sd, var)
 
+importFrom(samr,samr)
 useDynLib(GeneSelector)
 
 exportClasses("GeneRanking", "FoldMatrix", "BootMatrix", "RepeatedRanking",

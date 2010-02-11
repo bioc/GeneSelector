@@ -272,7 +272,7 @@ function(x, y, replicates=50, type=c("unpaired", "paired", "onesample"),
 
 setMethod("GenerateBootMatrix", signature(x="ExpressionSet", y="character"),
 function(x, y, replicates=50, type=c("unpaired", "paired", "onesample"),
-         maxties=NA, minclassize=2, balancedsample=FALSE, balancedclass=FALSE, 
+         maxties=NA, minclassize=2,  balancedclass=FALSE,balancedsample=FALSE, 
          control){
          GenerateBootMatrix(pData(x)[,y],replicates,type,maxties,minclassize,
                            balancedclass,balancedsample,control)})

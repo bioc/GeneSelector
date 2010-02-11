@@ -17,7 +17,7 @@
 #
 ###**************************************************************************###
 
-setGeneric("AggregateSimple", function(RR, measure = c("mode", "mean", "trimmed.mean", "median", "quantile"), q=NULL, trim = NULL)
+setGeneric("AggregateSimple", function(RR, measure = c("mode", "mean", "trimmed.mean", "median", "quantile"), q=NULL, trim = NULL)
             standardGeneric("AggregateSimple"))
             
 
