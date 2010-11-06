@@ -26,4 +26,4 @@ Collate: classes.r GenerateFoldMatrix.r GenerateBootMatrix.r
          RankingTstat.r RankingWelchT.r RankingWilcEbam.r
          RankingWilcoxon.r internals.r
 License: GPL (>= 2)
-biocViews: Statistics, DifferentialExpression
+biocViews: DifferentialExpression
