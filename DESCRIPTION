@@ -1,21 +1,23 @@
 Package: GeneSelector
-Version: 2.7.0
+Version: 2.0.5
 Date: 2009-16-10
 Title: Stability and Aggregation of ranked gene lists
 Author: Martin Slawski <ms@cs.uni-sb.de>, Anne-Laure Boulesteix <boulesteix@ibe.med.uni-muenchen.de>. 
-Maintainer: Martin Slawski <martin.slawski@cs.uni-sb.de>
-Depends: R (>= 2.5.1), methods
-Imports: Biobase, graphics, grDevices, methods, stats, samr
+Maintainer: Martin Slawski <ms@cs.uni-sb.de>
+Depends: R (>= 2.5.1), methods, stats, Biobase
 Suggests: multtest, siggenes, samr, limma
 Description: The term 'GeneSelector' refers to a filter selecting those genes 
-	     which are consistently identified as differentially expressed using
-	     various statistical procedures. 'Selected' genes are those present
-	     at the top of the list in various ranking methods (currently 14).
-	     In addition, the stability of the findings can be taken into account
-	     in the final ranking by examining perturbed versions of the original
-	     data set, e.g. by leaving samples, swapping class labels, generating
-	     bootstrap replicates or adding noise. Given multiple ranked lists,
-	     one can use aggregation methods in order to find a synthesis.
+	     which are consistently identified as differentially 
+	     expressed using various statistical procedures. 
+             'Selected' genes are those present
+             at the top of the list in various ranking
+             methods (currently 14). In addition, the stability
+             of the findings can be taken into account in the final 
+	     ranking by examining perturbed
+             versions of the original data set, e.g. by leaving
+             samples, swapping class labels, generating bootstrap
+             replicates or adding noise. Given multiple ranked lists, one can
+	     use aggregation methods in order to find a synthesis.
 Collate: classes.r GenerateFoldMatrix.r GenerateBootMatrix.r
          RepeatRanking.r GetStabilityOverlap.r GetStabilityDistance.r GetStabilityUnion.r
          AggregateSimple.r AggregatePenalty.r AggregateMC.r AggregateSVD.r
@@ -26,4 +28,5 @@ Collate: classes.r GenerateFoldMatrix.r GenerateBootMatrix.r
          RankingTstat.r RankingWelchT.r RankingWilcEbam.r
          RankingWilcoxon.r internals.r
 License: GPL (>= 2)
-biocViews: DifferentialExpression
+biocViews: Statistics, DifferentialExpression
+
