@@ -6,6 +6,7 @@ Author: Martin Slawski <ms@cs.uni-sb.de>, Anne-Laure Boulesteix <boulesteix@ibe.
 Maintainer: Martin Slawski <ms@cs.uni-sb.de>
 Depends: R (>= 2.5.1), methods, stats, Biobase
 Suggests: multtest, siggenes, samr, limma
+Imports: multtest, siggenes, samr, limma
 Description: The term 'GeneSelector' refers to a filter selecting those genes 
 	     which are consistently identified as differentially 
 	     expressed using various statistical procedures. 
