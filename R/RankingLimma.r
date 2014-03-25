@@ -70,7 +70,7 @@ setMethod("RankingLimma", signature(x="matrix", y="numeric"),
            pvals <- outp$p.value[,1]
           }
            
-          ranking <- rank(-abs(statistic))
+          ranking <- rank(-abs(statistic), ties = "first")
           if(!is.null(gene.names))
             names(pvals) <- names(statistic) <- gene.names
           else{

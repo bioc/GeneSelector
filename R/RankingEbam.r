@@ -80,7 +80,7 @@ setMethod("RankingEbam", signature(x="matrix", y="numeric"),
         posterior[posterior < 0] <- 0
         statistic <- posterior
         
-        ranking <- rank(-posterior)
+        ranking <- rank(-posterior, ties = "first")
         pvals <- rep(NA, length(posterior))
           if(!is.null(gene.names))
           names(pvals) <- names(statistic) <- gene.names

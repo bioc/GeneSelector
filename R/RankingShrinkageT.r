@@ -104,7 +104,7 @@ setMethod("RankingShrinkageT", signature(x="matrix", y="numeric"),
 
           #if(pvalues) pvals <- 1 - pf(statistic^2, 1, dft)
           pvals <- rep(NA, nrow(x))
-          ranking <- rank(-abs(statistic))
+          ranking <- rank(-abs(statistic), ties = "first")
           if(!is.null(gene.names))
           names(pvals) <- names(statistic) <- gene.names
           else{

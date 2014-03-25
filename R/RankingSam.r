@@ -68,7 +68,7 @@ setMethod("RankingSam", signature(x="matrix", y="numeric"),
           statistic <- samtest$tt
           if(pvalues) pvals <- samr.pvalues.from.perms(statistic, samtest$ttstar)
           else pvals <- rep(NA, nrow(x))
-          ranking <- rank(-abs(statistic))
+          ranking <- rank(-abs(statistic), ties = "first")
           if(!is.null(gene.names))
             names(pvals) <- names(statistic) <- gene.names
           else{
