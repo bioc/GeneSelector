@@ -82,7 +82,7 @@ setMethod("RankingTstat", signature(x="matrix", y="numeric"),
           else pvals <- rep(NA, nrow(x))
           }
           statistic <- ttest
-          ranking <- rank(-abs(statistic))
+          ranking <- rank(-abs(statistic), ties = "first")
           if(!is.null(gene.names))
           names(pvals) <- names(statistic) <- gene.names
           else{

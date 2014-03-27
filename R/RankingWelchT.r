@@ -54,7 +54,7 @@ setMethod("RankingWelchT", signature(x="matrix", y="numeric"),
            if(pvalues) pvals <- 1 - pf(ttest^2, 1, nu)
            else pvals <- rep(NA, nrow(x))
           statistic <- ttest
-          ranking <- rank(-abs(statistic))
+          ranking <- rank(-abs(statistic), ties = "first")
           if(!is.null(gene.names))
           names(pvals) <- names(statistic) <- gene.names
           else{
