@@ -1,5 +1,5 @@
 Package: GeneSelector
-Version: 2.31.0
+Version: 2.31.1
 Date: 2009-16-10
 Title: Stability and Aggregation of ranked gene lists
 Author: Martin Slawski <ms@cs.uni-sb.de>, Anne-Laure Boulesteix
@@ -28,3 +28,4 @@ Collate: classes.r GenerateFoldMatrix.r GenerateBootMatrix.r
         RankingWelchT.r RankingWilcEbam.r RankingWilcoxon.r internals.r
 License: GPL (>= 2)
 biocViews: StatisticalMethod, DifferentialExpression
+PackageStatus: Deprecated
